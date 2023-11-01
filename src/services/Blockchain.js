@@ -1,4 +1,4 @@
-// import abi from "../abis/src/contracts/candleGenie.sol/CandleGeniePrediction.json";
+import abi from "../abis/src/contracts/Patient.sol/PatientDetails.json";
 import axios from "axios";
 // import address from "../abis/contractAddress.json";
 import { getGlobalState, setGlobalState } from "../store";
@@ -90,7 +90,7 @@ const GetEthereumContract = async () => {
   // const {isConnected} = useAccount();
   // console.log(connectedAccount);
   
-  if (checkConnectionState) {
+  if (connectedAccount) {
     //check whether device pc or mobile
     const provider = new ethers.providers.Web3Provider(ethereum);//pc
     const signer = provider.getSigner();
@@ -133,13 +133,13 @@ const reportError = (error) => {
 };
 
 const alert_ = (indication, hash) => {
-  Swal.fire({
-    position: "center",
-    icon: indication,
-    title: hash,
-    showConfirmButton: true,
-    focusCancel: false,
-  });
+  // Swal.fire({
+  //   position: "center",
+  //   icon: indication,
+  //   title: hash,
+  //   showConfirmButton: true,
+  //   focusCancel: false,
+  // });
 };
 
 
