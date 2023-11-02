@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Container from "react-bootstrap/Container";
-
-import { Navbar, Nav, Button } from "react-bootstrap";
+import brandLogo from "../../assets/Header & footer/header/medichainlogo.svg"
+import { Navbar, Nav, Button,NavLink } from "react-bootstrap";
 import { truncate, useGlobalState } from "../../../store";
 import { useAccount, useBalance, useNetwork } from "wagmi";
 import "reactjs-popup/dist/index.css";
@@ -50,38 +50,24 @@ export default function Scrollbar() {
         }
       } catch (error) {}
     }
-    let userbalance = Math.round(data?.formatted * 10000) / 10000;
-    //  console.log(userbalance);
-    setBalance(userbalance.toString());
-
-    let formattedFund = (balance - injectAmount).toFixed(4);
-    // setBalanceAfterTransfer(Number(formattedFund));
-
     fetchData();
-  }, [isConnected, balance, injectAmount]);
+  }, [isConnected]);
 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!injectAmount) return;
-    // console.log(typeof injectAmount);
-    if (injectAmount > 0) {
-      // alert("hai mugunth");
-      let amount = Number(injectAmount);
-      // await blockchain.fundInject(amount);
-    } else {
-      // alert("nothing");
-    }
-  };
 
   return (
     <>
       <Navbar expand="lg" className="bg-body-tertiary">
         <Container fluid>
-          <Navbar.Brand href="#">MediChain</Navbar.Brand>
+        <NavLink href="/">
+            <div className="d-flex">
+            <img src={brandLogo} width={40} className="navlogo" />
+            <h4 className="ms-3 mt-3 ">MediChain</h4>
+            </div>
+          </NavLink>
           <Navbar.Toggle aria-controls="navbarScroll" />
-          <Navbar.Collapse id="navbarScroll" className="justify-content-center">
-            <Nav className="justify-content-center" navbarScroll>
+          <Navbar.Collapse id="navbarScroll" className="justify-content-end">
+            <Nav className="justify-content-end" navbarScroll>
               <Nav.Link href="#action1">Home</Nav.Link>
               <Nav.Link href="#action2">About</Nav.Link>
               <Nav.Link href="#action3">Owner</Nav.Link>

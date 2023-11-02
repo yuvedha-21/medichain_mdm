@@ -1,0 +1,13 @@
+.homeBackground{
+    background-image: url("../assets/homepage/Medical-Records-Management-Ban.avif");
+    background-repeat: no-repeat;
+    height: 90vh;       
+}
+
+.homecomH1{
+    margin-top: 30%;
+    color: white;
+    font-weight: 900;
+    line-height: 2;
+
+}
