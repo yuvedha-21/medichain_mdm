@@ -1,0 +1,20 @@
+.doctorBg{
+padding-top: 10%;
+padding-bottom: 7%;
+
+}
+
+.doctorLandingPage{
+    width: 100%;
+}
+
+.doctorLandingPageh1{
+    font-weight: 900;
+    margin-left: 7%;
+    line-height: 150%;
+}
+
+.doctorLandingPageButton{
+    margin-left: 7%;
+    margin-top: 5%;
+}

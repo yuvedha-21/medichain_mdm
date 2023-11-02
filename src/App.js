@@ -1,17 +1,16 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import "./App.css";
 import "../node_modules//bootstrap/dist/css/bootstrap.css";
-import Headerbar from "./components/Header_footer/navbar/headerbar";
-import Scrollbar from "./components/Header_footer/navbar/scrollbar";
+import LandingPage from "./pages/landingPage";
+import DoctorPage from "./pages/doctorPage";
 
 function App() {
   return (
 
     <BrowserRouter>
       <Routes>
-        {/* <Route path="/" element={<Headerbar/>} /> */}
-        <Route path="/" element={<Scrollbar/>} />
-
+        <Route path="/" element={<LandingPage/>} />
+        <Route path="/doctor" element={<DoctorPage/>}/>
       </Routes>
     </BrowserRouter>
  
