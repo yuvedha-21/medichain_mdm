@@ -46,7 +46,6 @@ export default function Scrollbar() {
           await blockchain.isWallectConnected();
           const ownerAddress = await blockchain.getContractOwner();
           setOwnerAddress(ownerAddress.toLowerCase());
-          // console.log(ownerAddress);
         }
       } catch (error) {}
     }

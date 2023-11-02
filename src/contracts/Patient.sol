@@ -28,6 +28,7 @@ contract PatientDetails is DoctorDetails {
         uint256 monthOfBirth;
         uint256 yearOfBirth;
         uint256 age;
+        bool isDoctor;
         }
         struct PatientMedicalDetails{
         address walletAddress;
@@ -61,7 +62,7 @@ contract PatientDetails is DoctorDetails {
         string memory _physicalActivityLevel,
         string memory _pastMedicationDetails_IfAny
         )
-        public {
+        public _onlyAdmin {
             require(PatientsMedicalDetails[_walletAddress].walletAddress!=_walletAddress,"Patient medical details already exist!!");
             require(_walletAddress!=address(0), "Kindly fill all the mandatory feilds!!");
             PatientsMedicalDetails[_walletAddress]=PatientMedicalDetails(_walletAddress,
@@ -84,7 +85,8 @@ contract PatientDetails is DoctorDetails {
         string memory _Occupation,
         uint256 _dayOfBirth,
         uint256 _monthOfBirth,
-        uint256 _yearOfBirth)public _onlyAdmin{
+        uint256 _yearOfBirth,
+        bool _isDoctor)public _onlyAdmin{
             require(PatientsPersonalDetails[_walletAddress].walletAddress!=_walletAddress,"Patient's personal details already exist!!");
         require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0 && _dayOfBirth!=0 && _dayOfBirth<30 && _monthOfBirth!=0 && _monthOfBirth<12 && _yearOfBirth!=0 ,"Kindly fill all the mandatory feilds!!");
     
@@ -98,7 +100,8 @@ contract PatientDetails is DoctorDetails {
         _dayOfBirth,
         _monthOfBirth,
         _yearOfBirth,
-        age
+        age,
+        _isDoctor
         );
         if (PatientsMedicalDetails[_walletAddress].walletAddress==_walletAddress) {
             totalPatient++;
@@ -114,7 +117,7 @@ contract PatientDetails is DoctorDetails {
         string memory _RespiratoryRate,
         string memory _Dosage
 
-        ) public  {
+        ) public _onlyAdmin {
 
         require(PatientsPersonalDetails[_walletAddress].isAlive, "We regret to say that,this Patient is dead and cannot add Health details anymore!!");
         require(PatientsPersonalDetails[_walletAddress].walletAddress==_walletAddress && PatientsMedicalDetails[_walletAddress].walletAddress==_walletAddress,"Incorrect Patient wallet address or The Patient detail specific to personal or past medical history of the address provided not available in the chain!! ");
@@ -167,7 +170,7 @@ function EditPatinetMedicalDetails(
         string memory _physicalActivityLevel,
         string memory _pastMedicationDetails_IfAny
        
-)public {
+)public _onlyAdmin {
     require(_walletAddress!=address(0) ,"Kindly fill all the mandatory feilds!!");
 
         require(PatientsPersonalDetails[_walletAddress].walletAddress==_walletAddress,"Incorrect Patient wallet address or The Patient detail for the address provided not available in the chain!!");
@@ -187,7 +190,8 @@ function EditPatinetMedicalDetails(
         string memory _Occupation,
         uint256 _dayOfBirth,
         uint256 _monthOfBirth,
-        uint256 _yearOfBirth)public _onlyAdmin(){
+        uint256 _yearOfBirth,
+        bool _isDoctor)public _onlyAdmin(){
            
         require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0 && _dayOfBirth!=0 &&_monthOfBirth!=0 && _yearOfBirth!=0  ,"Kindly fill all the mandatory feilds!!");
 
@@ -205,7 +209,8 @@ function EditPatinetMedicalDetails(
         _dayOfBirth,
         _monthOfBirth,
         _yearOfBirth,
-        age
+        age,
+        _isDoctor
         );
     }
 }

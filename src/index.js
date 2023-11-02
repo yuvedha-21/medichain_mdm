@@ -24,19 +24,19 @@ import {
 import { configureChains, createConfig, WagmiConfig, } from 'wagmi';
 import {
   // polygon,
-  // sepolia,
-  polygonMumbai
+  sepolia,
+  // polygonMumbai
 } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { publicProvider } from 'wagmi/providers/public';
     
   const { chains, publicClient } = configureChains(
-      [polygonMumbai],
+      [sepolia],
       [
         // wss://polygon-mumbai.g.alchemy.com/v2/q0h4BPlvsPC7SXZq61n3S3H7AqxD64sn
         //wss://polygon-mumbai.g.alchemy.com/v2/q0h4BPlvsPC7SXZq61n3S3H7AqxD64sn
-        alchemyProvider({ apiKey: 'q0h4BPlvsPC7SXZq61n3S3H7AqxD64sn'}),
+        alchemyProvider({ apiKey: 'WwOzwGSBtyRSL2o0sFX4AFEGbyJ1tfXV'}),
         // infuraProvider({apiKey: '08828a2b10ca496fa18caac08cb74410'}),
         publicProvider(),
       ]
@@ -89,7 +89,7 @@ root.render(
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider
         chains={chains}
-        initialChain={polygonMumbai}
+        initialChain={sepolia}
         coolMode
         {...App}
       >

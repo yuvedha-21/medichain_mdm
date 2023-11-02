@@ -1,7 +1,7 @@
 //YL8ZnJJABhPYC20ilgZfGj6JSvvh1A6Op9CYzOcvsvygZCzLFC8CeNlkvJCUbTEy
 const Moralis = require("moralis").default;
 const fs = require("fs");
-let id=6
+let id=8
 async function uploadToIpfs() {
   await Moralis.start({
     apiKey: "YL8ZnJJABhPYC20ilgZfGj6JSvvh1A6Op9CYzOcvsvygZCzLFC8CeNlkvJCUbTEy",
@@ -27,10 +27,10 @@ async function uploadToIpfs() {
   const response = await Moralis.EvmApi.ipfs.uploadFolder({
     abi: uploadArray,
   });
-  // fs.writeFileSync(`./${id}.json`, JSON.stringify({}));
-  // const newFileName = `${id+1}.json`;
-  // fs.renameSync(`${id}.json`, newFileName);
-  // id++;
+  fs.writeFileSync(`./${id}.json`, JSON.stringify({}));
+  const newFileName = `${id+1}.json`;
+  fs.renameSync(`${id}.json`, newFileName);
+  id++;
   console.log(response.result[0].path);
 }
-uploadToIpfs();
+// uploadToIpfs();

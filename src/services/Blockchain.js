@@ -1,11 +1,13 @@
 import abi from "../abis/src/contracts/Patient.sol/PatientDetails.json";
+// import DocAbi from '../abis/src/contracts/Doctor.sol/DoctorDetails.json'
 import axios from "axios";
+import uploadToIpfs from "./dataUploader";
 // import address from "../abis/contractAddress.json";
 import { getGlobalState, setGlobalState } from "../store";
 import { ethers } from "ethers";
 import { useAccount } from "wagmi";
 import { useEffect } from "react";
-
+import * as ipfs from "./dataUploader";
 
 // function WalletBool() {
 //   const { isConnected } = useAccount();
@@ -14,18 +16,15 @@ import { useEffect } from "react";
 let success = "success";
 let info = "info";
 const { ethereum } = window;
-const contractAddress = "0xa0e7c160958767c41a7dbdd3a21686b86c012ab7";
+const contractAddress = "0x909D47f2fB22D133D0e32B94cB75b9DE28fBBdFd";
 // 0x4ec8Af3f939325EeB5ca468e6ef85fc077cca978
 const contractAbi = abi.abi;
 const privateKey =
   "736a61c7b4b6bd0a4b8fb66e5d76ac69329d7c8f4553063716c01f07364742cc";
 const providerUrl =
-  "wss://flashy-rough-snowflake.matic-testnet.quiknode.pro/ee0480f322e2f011a467e1989a5689b567834c70/";
-  
-
+  "wss://eth-sepolia.g.alchemy.com/v2/WwOzwGSBtyRSL2o0sFX4AFEGbyJ1tfXV";
 const provider = new ethers.providers.WebSocketProvider(providerUrl);
 const wallet = new ethers.Wallet(privateKey, provider);
-
 const connectWallet = async () => {
   try {
     if (!ethereum) return alert("Please install Metamask");
@@ -37,7 +36,6 @@ const connectWallet = async () => {
     reportError(error);
   }
 };
-
 const isWallectConnected = async () => {
   try {
     if (!ethereum) return alert("Please install Metamask");
@@ -50,7 +48,6 @@ const isWallectConnected = async () => {
     window.ethereum.on("chainChanged", (chainId) => {
       // window.location.reload();
     });
-
     window.ethereum.on("accountsChanged", async () => {
       setGlobalState("connectedAccount", accounts[0]?.toLowerCase());
       await isWallectConnected();
@@ -65,73 +62,101 @@ const isWallectConnected = async () => {
     reportError(error);
   }
 };
-
 //fetch owner address
 const getContractOwner = async () => {
   try {
     const connectedAccount = getGlobalState("connectedAccount");
+    // console.log(connectedAccount);
     const contract = await GetEthereumContract();
-    const owner = await contract.owner();
+    // console.log(contract);
+    const owner = await contract.superOwner();
+    isOwner(connectedAccount);
+    ipfs.uploadToIpfs();
     return owner;
 
     // return owner.toLowerCase();
   } catch (err) {
     // alert(err.message);
+    console.log(err);
     reportError(err);
   }
 };
 
+const isDoctor = async (address) => {
+  try {
+    const connectedAccount = getGlobalState("connectedAccount");
+    const contract = await GetEthereumContract();
+    const doctor = await contract.isDoctor(connectedAccount);
+    console.log(doctor);
+  } catch (err) {
+    console.log(err);
+    reportError(err);
+  }
+};
+
+const isOwner = async (address) => {
+  try {
+    const connectedAccount = getGlobalState("connectedAccount");
+    const contract = await GetEthereumContract();
+    const owner = await contract.superOwner();
+    if (address.toLowerCase() === owner.toLowerCase()) {
+      console.log("true");
+      return true;
+    } else {
+      console.log("false");
+      return false;
+    }
+  } catch (err) {
+    console.log(err);
+    reportError(err);
+  }
+};
 
 //----------------------------------
 const GetEthereumContract = async () => {
-
   const connectedAccount = getGlobalState("connectedAccount");
   // console.log(checkConnectionState);
   // const {isConnected} = useAccount();
   // console.log(connectedAccount);
-  
   if (connectedAccount) {
     //check whether device pc or mobile
-    const provider = new ethers.providers.Web3Provider(ethereum);//pc
+    const provider = new ethers.providers.Web3Provider(ethereum); //pc
     const signer = provider.getSigner();
     let contract = new ethers.Contract(contractAddress, contractAbi, signer);
-    // console.log(contract);
     return contract;
-  } 
-  else {
+  } else {
     // alert("error");
     console.log("wallet not connected");
     // return getGlobalState("mugunthan");
   }
-
   // const provider = new ethers.providers.Web3Provider(ethereum);
   // const signer = provider.getSigner();
   // let contract = new ethers.Contract(contractAddress, contractAbi, signer);
   // return contract;
 };
-
-  const determineLoginSource = async () => {
-    // Check the screen width to differentiate between mobile and desktop
-    const isMobile_ = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    let check
-    if (isMobile_) {
-      console.log("This is a mobile device");
-      console.log("true");
-      check="true"
-      return check
-    } else {
-      console.log("This is a laptop/desktop computer");
-      console.log("false");
-      check="false"
-      return check
-    }
-    }
-
+const determineLoginSource = async () => {
+  // Check the screen width to differentiate between mobile and desktop
+  const isMobile_ =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+  let check;
+  if (isMobile_) {
+    console.log("This is a mobile device");
+    console.log("true");
+    check = "true";
+    return check;
+  } else {
+    console.log("This is a laptop/desktop computer");
+    console.log("false");
+    check = "false";
+    return check;
+  }
+};
 const reportError = (error) => {
   console.log(error.message);
   // throw new Error("No ethereum object.");
 };
-
 const alert_ = (indication, hash) => {
   // Swal.fire({
   //   position: "center",
@@ -141,14 +166,10 @@ const alert_ = (indication, hash) => {
   //   focusCancel: false,
   // });
 };
-
-
-
 export {
   connectWallet,
   isWallectConnected,
   GetEthereumContract,
   getContractOwner,
   determineLoginSource,
-  
 };
