@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { truncate, useGlobalState } from "../../store";
 import { useAccount, useBalance, useNetwork } from "wagmi";
-import "reactjs-popup/dist/index.css";
 import * as blockchain from "../../services/Blockchain";
 import { getGlobalState, setGlobalState } from "../../store";
 import {
