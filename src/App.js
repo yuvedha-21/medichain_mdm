@@ -3,6 +3,8 @@ import "./App.css";
 import "../node_modules//bootstrap/dist/css/bootstrap.css";
 import LandingPage from "./pages/landingPage";
 import DoctorPage from "./pages/doctorPage";
+// import SuperOwnerComponent from "./components/owner/superOwnerComponent";
+import OwnerPage from "./pages/ownerPage";
 
 function App() {
   return (
@@ -11,6 +13,7 @@ function App() {
       <Routes>
         <Route path="/" element={<LandingPage/>} />
         <Route path="/doctor" element={<DoctorPage/>}/>
+        <Route path="/owner" element={<OwnerPage/>}/>
       </Routes>
     </BrowserRouter>
  

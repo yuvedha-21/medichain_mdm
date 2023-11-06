@@ -1,13 +1,13 @@
 import abi from "../abis/src/contracts/Patient.sol/PatientDetails.json";
 // import DocAbi from '../abis/src/contracts/Doctor.sol/DoctorDetails.json'
 import axios from "axios";
-import uploadToIpfs from "./dataUploader";
+// import uploadToIpfs from "./dataUploader";
 // import address from "../abis/contractAddress.json";
 import { getGlobalState, setGlobalState } from "../store";
 import { ethers } from "ethers";
 import { useAccount } from "wagmi";
 import { useEffect } from "react";
-import * as ipfs from "./dataUploader";
+// import * as ipfs from "./dataUploader";
 
 // function WalletBool() {
 //   const { isConnected } = useAccount();
@@ -70,8 +70,9 @@ const getContractOwner = async () => {
     const contract = await GetEthereumContract();
     // console.log(contract);
     const owner = await contract.superOwner();
+    console.log(owner);
     isOwner(connectedAccount);
-    ipfs.uploadToIpfs();
+    // ipfs.uploadToIpfs();
     return owner;
 
     // return owner.toLowerCase();
