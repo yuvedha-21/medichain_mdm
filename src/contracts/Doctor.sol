@@ -12,15 +12,15 @@ contract DoctorDetails {
      
   }
      modifier _onlyOwner() {
-        require(owner[msg.sender]==true, "Accesseble only for Owners");
+        require(owner[msg.sender]==true || msg.sender==superOwner, "Accesseble only for Owners and SuperOwners");
         _;
     }
-  modifier _onlyAdmin(){
+  modifier _onlyDoctor(){
       bool checkAccess;
-      if (OnlyOwner[msg.sender]) {
+      if (DoctorAccess[msg.sender]) {
           checkAccess=true;
       }
-    require(OnlyOwner[msg.sender],"Only the Admin can call this function due to security reasons!!!");
+    require(DoctorAccess[msg.sender],"Only the Doctors can call this function due to security reasons!!!");
     _;
   }
   
@@ -31,11 +31,9 @@ contract DoctorDetails {
     struct DoctorPersonalInfo{
         string name;
         address walletAddress;
-        uint256 dayOfBirth;
-        uint256 monthOfBirth;
-        uint256 yearOfBirth;
-        uint256 age;
-        uint256 phoneNumber;
+        string dateOfBirth;
+        uint age;
+        uint phoneNumber;
         string email;
     }
     struct DoctorProfessionalDetails{
@@ -49,22 +47,22 @@ contract DoctorDetails {
         bool isLicenseValid;
         }
     address[] public AdminAccess;
-    mapping (address=>bool)public OnlyOwner;
+    mapping (address=>bool)public DoctorAccess;
     mapping(address=>DoctorPersonalInfo)public DoctorsPersonalInfo;
     mapping (address=>DoctorProfessionalDetails)public Doctors_ProfessionalDetails;
-    uint256 public totalDoctors;
-    uint256 public totalAdmin;
+    uint public totalDoctors;
+    uint public totalAdmin;
 
  
 
-    function getYear(uint256 timestamp) public pure returns (uint256) {
+    function getYear(uint timestamp) public pure returns (uint) {
         return timestamp / (365 * 24 * 60 * 60);
     }
 
-    function getAge(uint256 _yearOfBirth)public view returns(uint256){
+    function getAge(uint _yearOfBirth)public view returns(uint){
        
-         uint256 yearDifference=getYear(block.timestamp);
-        uint256 age=(1970+yearDifference)-_yearOfBirth;
+         uint yearDifference=getYear(block.timestamp);
+        uint age=(1970+yearDifference)-_yearOfBirth;
         require(age>0, "Enter correct birth year");
         return age;
     }
@@ -74,20 +72,20 @@ contract DoctorDetails {
     function removeOwner(address _address)public _superAdmin(){
         owner[_address]=false;
     }
-    function AddAdminAccess(address _walletAddress)public _superAdmin(){
+    function AddAdminAccess(address _walletAddress)public _onlyOwner(){
         require(owner[msg.sender]=true,"Only owner has privilege to add owner access!!");
-        require(!OnlyOwner[_walletAddress], "Address already has admin access");
+        require(!DoctorAccess[_walletAddress], "Address already has admin access");
         require(_walletAddress!=address(0), "Invalid Address");
         AdminAccess.push(_walletAddress);
-        OnlyOwner[_walletAddress]=true;
+        DoctorAccess[_walletAddress]=true;
         totalAdmin++;
     }
     
-    function DeleteAdminAccess(address _walletAddress)public _superAdmin() {
+    function DeleteAdminAccess(address _walletAddress)public _onlyOwner() {
         require(owner[msg.sender]=true,"Only owner has privilege to delete owner access!!");
         require(_walletAddress!=address(0), "Invalid Address");
-        require(OnlyOwner[_walletAddress], "Provided address must be an AdminAccessAddress to remove AdminAccess!!");
-        OnlyOwner[_walletAddress]=false;
+        require(DoctorAccess[_walletAddress], "Provided address must be an AdminAccessAddress to remove AdminAccess!!");
+        DoctorAccess[_walletAddress]=false;
     }
     
     function AddDoctorProfessionalInfo( address _walletAddress,string memory _MedicalLicenseNumber,
@@ -95,7 +93,7 @@ contract DoctorDetails {
         string memory _AvailableTimings,
         uint _ExperienceInYear,
           string memory _MedicalSchoolAttended,
-        bool _isLicenseValid)public  _superAdmin{
+        bool _isLicenseValid)public  _onlyOwner{
              require(Doctors_ProfessionalDetails[_walletAddress].walletAddress!=_walletAddress, "Physician Professional details already exist!!");
         require(Doctors_ProfessionalDetails[_walletAddress].walletAddress!=_walletAddress && bytes(_MedicalSchoolAttended).length>0 &&  bytes(_MedicalLicenseNumber).length>0 && bytes(_Specialization).length>0 && bytes(_AvailableTimings).length>0,
         "Enter Correct details");
@@ -118,24 +116,21 @@ contract DoctorDetails {
         string  memory _name,
         address _walletAddress,
       
-        uint256 _dayOfBirth,
-        uint256 _monthOfBirth,
-        uint256 _yearOfBirth,
-        uint256 _phoneNumber,
+        string memory _dateOfBirth,
+        uint _age,
+        uint _phoneNumber,
         string memory _email
         
-        )public _superAdmin{
+        )public _onlyOwner{
 require(DoctorsPersonalInfo[_walletAddress].walletAddress!=_walletAddress , "Physician personal detail already exist!!");
 // uint getCurrentYear=getYear(block.timestamp / (365 * 24 * 60 * 60))+1970;
-       require( _walletAddress!=address(0) &&  _dayOfBirth>0 && _dayOfBirth<=31 && _monthOfBirth>0 && _monthOfBirth<=12 &&_yearOfBirth>0&&  _phoneNumber>0 &&bytes(_email).length>0 &&bytes(_name).length>0 
+       require( _walletAddress!=address(0) &&  _phoneNumber>0 &&bytes(_email).length>0 &&bytes(_name).length>0 
         ,"Kindly fill all the mandatory feilds properly!!");
-       uint256 age=getAge(_yearOfBirth);
+       uint age=_age;
      
             DoctorsPersonalInfo[_walletAddress]=DoctorPersonalInfo(_name,
                 _walletAddress,
-                _dayOfBirth,
-                _monthOfBirth,
-                _yearOfBirth,
+                _dateOfBirth,
                 age,
                 _phoneNumber,
                 _email
@@ -148,7 +143,7 @@ require(DoctorsPersonalInfo[_walletAddress].walletAddress!=_walletAddress , "Phy
           }
             
     }
-    function getDoctor(address _walletAddress) public _superAdmin view returns(DoctorPersonalInfo memory,DoctorProfessionalDetails memory){
+    function getDoctor(address _walletAddress) public _onlyOwner view returns(DoctorPersonalInfo memory,DoctorProfessionalDetails memory){
        require(_walletAddress!=address(0),"Wallet Address cannot be empty");
         require(DoctorsPersonalInfo[_walletAddress].walletAddress==_walletAddress && Doctors_ProfessionalDetails[_walletAddress].walletAddress==_walletAddress ,"Incorrect Doctor wallet address or The Doctor detail for the address provided is not completely available in the chain!!");
        
@@ -163,7 +158,7 @@ require(DoctorsPersonalInfo[_walletAddress].walletAddress!=_walletAddress , "Phy
         uint _ExperienceInYear,
         string memory _MedicalSchoolAttended,
         bool _isLicenseValid,
-        address[] memory _treatedPatients)public _superAdmin{
+        address[] memory _treatedPatients)public _onlyOwner{
         require(_walletAddress!=address(0) && bytes(_MedicalSchoolAttended).length>0 && bytes(_MedicalLicenseNumber).length>0 && bytes(_Specialization).length>0 && 
          bytes(_AvailableTimings).length>0,"enter correct details" );
          require(Doctors_ProfessionalDetails[_walletAddress].walletAddress==_walletAddress, "Incorrect Doctor's wallet address or The Doctor detail for the address provided not available in the chain!!");
@@ -181,28 +176,25 @@ require(DoctorsPersonalInfo[_walletAddress].walletAddress!=_walletAddress , "Phy
         string memory _name,
         address _walletAddress,
      
-        uint256 _dayOfBirth,
-        uint256 _monthOfBirth,
-        uint256 _yearOfBirth,
-        uint256 _phoneNumber,
+       string memory _dateOfBirth,
+       uint _age,
+        uint _phoneNumber,
         string memory _email
         
-        )public _superAdmin{
+        )public _onlyOwner{
 
        require(_walletAddress!=address(0) 
-        && _dayOfBirth>0 && _monthOfBirth>0 && _yearOfBirth>0&& _phoneNumber>0 &&bytes(_email).length>0
+        &&bytes(_email).length>0
          &&bytes(_name).length>0 ,"Kindly fill all the mandatory feilds properly!!");
 
         require(DoctorsPersonalInfo[_walletAddress].walletAddress==_walletAddress,"Incorrect Doctor's wallet address or The Doctor detail for the address provided not available in the chain!!");
 
-       uint256 age=getAge(_yearOfBirth);
+       uint age=_age;
   
             DoctorsPersonalInfo[_walletAddress]=DoctorPersonalInfo(
                 _name,
                 _walletAddress,
-                _dayOfBirth,
-                _monthOfBirth,
-                _yearOfBirth,
+                _dateOfBirth,
                 age,
                 _phoneNumber,
                 _email
@@ -211,11 +203,16 @@ require(DoctorsPersonalInfo[_walletAddress].walletAddress!=_walletAddress , "Phy
          
     }
     function isDoctor(address _address)public view returns(bool val){
-        if (OnlyOwner[_address]){
+        if (DoctorAccess[_address]){
             return true;
         }
+        
     }
-
+function isOwner(address _address)public view returns(bool val){
+            if(owner[_address]){
+                return true;
+            }
+        }
     
 
 }

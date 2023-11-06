@@ -4,7 +4,7 @@ import corporate from "../assets/doctor/corporate.png";
 import { Navbar, Nav, Button,NavLink } from "react-bootstrap";
 import { truncate, useGlobalState } from "../../store";
 import { useAccount, useBalance, useNetwork } from "wagmi";
-import "reactjs-popup/dist/index.css";
+// import "reactjs-popup/dist/index.css";
 import * as blockchain from "../../services/Blockchain";
 import { getGlobalState, setGlobalState } from "../../store";
 import {
@@ -19,7 +19,7 @@ export default function DoctorComponent() {
     const [ownerAddress, setOwnerAddress] = useState("");
     const { chain } = useNetwork();
 
-    console.log(address);
+    // console.log(address);
 
 
   
