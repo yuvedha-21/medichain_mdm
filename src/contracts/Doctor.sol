@@ -41,10 +41,8 @@ contract DoctorDetails {
         string MedicalSchoolAttended;
         string MedicalLicenseNumber;
         string Specialization;
-        string AvailableTimings;
         uint ExperienceInYear;
-        address[] treatedPatients;
-        bool isLicenseValid;
+        // address[] treatedPatients;
         }
     address[] public AdminAccess;
     mapping (address=>bool)public DoctorAccess;
@@ -90,22 +88,19 @@ contract DoctorDetails {
     
     function AddDoctorProfessionalInfo( address _walletAddress,string memory _MedicalLicenseNumber,
         string memory _Specialization,
-        string memory _AvailableTimings,
+        
         uint _ExperienceInYear,
-          string memory _MedicalSchoolAttended,
-        bool _isLicenseValid)public  _onlyOwner{
+          string memory _MedicalSchoolAttended)public  _onlyOwner{
              require(Doctors_ProfessionalDetails[_walletAddress].walletAddress!=_walletAddress, "Physician Professional details already exist!!");
-        require(Doctors_ProfessionalDetails[_walletAddress].walletAddress!=_walletAddress && bytes(_MedicalSchoolAttended).length>0 &&  bytes(_MedicalLicenseNumber).length>0 && bytes(_Specialization).length>0 && bytes(_AvailableTimings).length>0,
+        require(Doctors_ProfessionalDetails[_walletAddress].walletAddress!=_walletAddress && bytes(_MedicalSchoolAttended).length>0 &&  bytes(_MedicalLicenseNumber).length>0 && bytes(_Specialization).length>0 ,
         "Enter Correct details");
         Doctors_ProfessionalDetails[_walletAddress]=DoctorProfessionalDetails(
                 _walletAddress,
                  _MedicalSchoolAttended,
                 _MedicalLicenseNumber,
                 _Specialization,
-                _AvailableTimings,
-                _ExperienceInYear,
-                new address[](0),
-                _isLicenseValid
+                _ExperienceInYear
+                // new address[](0)
             );
             if (DoctorsPersonalInfo[_walletAddress].walletAddress==_walletAddress) {
                 AddAdminAccess(_walletAddress);
@@ -154,22 +149,17 @@ require(DoctorsPersonalInfo[_walletAddress].walletAddress!=_walletAddress , "Phy
     }
     function EditDoctorProfessionalDetails(address _walletAddress,string memory _MedicalLicenseNumber,
         string memory _Specialization, 
-        string memory _AvailableTimings,
         uint _ExperienceInYear,
-        string memory _MedicalSchoolAttended,
-        bool _isLicenseValid,
-        address[] memory _treatedPatients)public _onlyOwner{
-        require(_walletAddress!=address(0) && bytes(_MedicalSchoolAttended).length>0 && bytes(_MedicalLicenseNumber).length>0 && bytes(_Specialization).length>0 && 
-         bytes(_AvailableTimings).length>0,"enter correct details" );
+        string memory _MedicalSchoolAttended)public _onlyOwner{
+        require(_walletAddress!=address(0) && bytes(_MedicalSchoolAttended).length>0 && bytes(_MedicalLicenseNumber).length>0 && bytes(_Specialization).length>0 ,"enter correct details" );
          require(Doctors_ProfessionalDetails[_walletAddress].walletAddress==_walletAddress, "Incorrect Doctor's wallet address or The Doctor detail for the address provided not available in the chain!!");
         Doctors_ProfessionalDetails[_walletAddress]=DoctorProfessionalDetails( _walletAddress,
                 _MedicalSchoolAttended,
                 _MedicalLicenseNumber,
                 _Specialization,
-                _AvailableTimings,
-                _ExperienceInYear,
-                _treatedPatients,
-                _isLicenseValid
+               
+                _ExperienceInYear
+               
             );
          }
         function EditDoctorPersonalDetails( 

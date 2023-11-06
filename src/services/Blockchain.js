@@ -116,14 +116,32 @@ const isOwner = async (address) => {
     reportError(err);
   }
 };
+const addDoctorDetails=async(personalDetails,professionalDetails)=>{
+  const contract = await GetEthereumContract();
+  const connectedAccount = getGlobalState("connectedAccount");
+  let arr=[]
+  // arr=doctorDetailsArray
+  console.log(personalDetails);
+  console.log(professionalDetails);
 
+
+  let addDoctorPersonalDetails = await contract.AddDoctorPersonalInfo(personalDetails.name,personalDetails.walletAddress,personalDetails.dob,personalDetails.age,personalDetails.mobileNumber,personalDetails.email, {
+    from: connectedAccount,
+  });
+
+  let addDoctorProfessionalDetails = await contract.AddDoctorProfessionalInfo(professionalDetails.ProfessionalWalletAddress, professionalDetails.MedicalLicenceNumber,professionalDetails.specialization,professionalDetails.experience,professionalDetails.medicalCollege,
+    {
+    from: connectedAccount,
+  });
+
+}
 //----------------------------------
 const GetEthereumContract = async () => {
   const connectedAccount = getGlobalState("connectedAccount");
   // console.log(checkConnectionState);
   // const {isConnected} = useAccount();
   // console.log(connectedAccount);
-  if (connectedAccount) {
+  if (!connectedAccount) {
     //check whether device pc or mobile
     const provider = new ethers.providers.Web3Provider(ethereum); //pc
     const signer = provider.getSigner();
@@ -177,4 +195,5 @@ export {
   GetEthereumContract,
   getContractOwner,
   determineLoginSource,
+  addDoctorDetails,
 };

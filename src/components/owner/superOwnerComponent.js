@@ -3,6 +3,7 @@ import Accordion from "react-bootstrap/Accordion";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import * as blockchain from "../../services/Blockchain";
 
 const SignupSchema = yup.object().shape({
   name: yup.string().required("*Please enter your name."),
@@ -45,10 +46,10 @@ export default function SuperOwnerComponent() {
 
   console.log(allDetails);
 
-  const onSubmit = (data) => {
+  const onSubmitOfDoctorDetails = async (data) => {
     // Extract personal details
     const { name, email, dob, walletAddress, mobileNumber, age } = data;
-
+console.log(name);
     // Extract professional details
     const {
       ProfessionalWalletAddress,
@@ -57,6 +58,8 @@ export default function SuperOwnerComponent() {
       experience,
       MedicalLicenceNumber,
     } = data;
+
+
 
     // Create an object for personal details
     const personalDetails = {
@@ -67,7 +70,6 @@ export default function SuperOwnerComponent() {
       mobileNumber,
       age,
     };
-
     // Create an object for professional details
     const professionalDetails = {
       ProfessionalWalletAddress,
@@ -76,10 +78,17 @@ export default function SuperOwnerComponent() {
       experience,
       MedicalLicenceNumber,
     };
+    console.log(professionalDetails);
 
-    setAllDetails(() => ({
-      doctorDetails: [personalDetails, professionalDetails],
-    }));
+    // const doctorDetails = [personalDetails, professionalDetails];
+
+    // setAllDetails(doctorDetails);
+    // setAllDetails(() => ({
+    //   doctorDetails: [personalDetails, professionalDetails],
+    // }));
+
+    const doctorDetails = await blockchain.addDoctorDetails(personalDetails,professionalDetails);
+    console.log(doctorDetails);
   };
 
   return (
@@ -97,7 +106,7 @@ export default function SuperOwnerComponent() {
           <Accordion.Header>Add Doctor Details</Accordion.Header>
           <Accordion.Body>
             <div className="container">
-              <form onSubmit={handleSubmit(onSubmit)}>
+              <form onSubmit={handleSubmit(onSubmitOfDoctorDetails)}>
                 <div className="form-group row">
                   <div className="col-lg-6">
                     <div className="row mt-2 text-center mb-2 fw-bold">
