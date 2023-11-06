@@ -75,6 +75,7 @@ const getContractOwner = async () => {
     const contract = await GetEthereumContract();
     // console.log(contract);
     const owner = await contract.superOwner();
+    console.log(owner);
     isOwner(connectedAccount);
     // uploadToIpfs();
     return owner;
