@@ -4,7 +4,6 @@ import corporate from "../assets/doctor/corporate.png";
 import Connectivity from "../connectivity/connectivity";
 
 export default function DoctorComponent() {
-
   return (
     <>
       <div className="container-fluid doctorBg">
@@ -14,7 +13,9 @@ export default function DoctorComponent() {
               <img src={corporate} className="doctorLandingPage" />
             </div>
             <div className="col-lg-5">
-              <h1 className="doctorLandingPageh1 ">MediChain <br/> Management To <br/> Track  Patient History</h1>
+              <h1 className="doctorLandingPageh1 ">
+                MediChain <br /> Management To <br /> Track Patient History
+              </h1>
               <Connectivity />
             </div>
           </div>
