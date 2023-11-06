@@ -1,13 +1,18 @@
 import abi from "../abis/src/contracts/Patient.sol/PatientDetails.json";
 // import DocAbi from '../abis/src/contracts/Doctor.sol/DoctorDetails.json'
 import axios from "axios";
-import uploadToIpfs from "./dataUploader";
-// import address from "../abis/contractAddress.json";
+// import { uploadToIpfs } from './dataUploader';// import address from "../abis/contractAddress.json";
 import { getGlobalState, setGlobalState } from "../store";
 import { ethers } from "ethers";
+
 import { useAccount } from "wagmi";
 import { useEffect } from "react";
-import * as ipfs from "./dataUploader";
+// import * as dataUploader from './dataUploader';
+
+// Now you can use the uploadToIpfs function from dataUploader
+// const { uploadToIpfs } = dataUploader;
+
+// import uploadToIpfs from "./dataUploader";
 
 // function WalletBool() {
 //   const { isConnected } = useAccount();
@@ -71,9 +76,8 @@ const getContractOwner = async () => {
     // console.log(contract);
     const owner = await contract.superOwner();
     isOwner(connectedAccount);
-    ipfs.uploadToIpfs();
+    // uploadToIpfs();
     return owner;
-
     // return owner.toLowerCase();
   } catch (err) {
     // alert(err.message);
