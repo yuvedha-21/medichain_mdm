@@ -11,26 +11,21 @@ contract PatientDetails is DoctorDetails {
         
     }
     modifier userOrAdmin(){
-          bool checkAccess;
-      if (PatientsPersonalDetails[msg.sender].walletAddress==msg.sender || PatientsMedicalDetails[msg.sender].walletAddress==msg.sender || OnlyOwner[msg.sender]) {
-          checkAccess=true;
-      }
-      require(checkAccess, "You have no access to fetch the details");
+      //either patients or doctors or owner or super owner can acces this particular data
+      require(PatientsPersonalDetails[msg.sender].walletAddress==msg.sender || PatientsMedicalDetails[msg.sender].walletAddress==msg.sender || DoctorAccess[msg.sender]||owner[msg.sender]||msg.sender==superOwner, "You have no access to fetch the details");
       _;
     }
       struct PatientPersonalDetails{
-        bool isAlive;
+        string date;
         string name;
         address walletAddress;
         string gender;
         string Occupation;
-        uint256 dayOfBirth;
-        uint256 monthOfBirth;
-        uint256 yearOfBirth;
-        uint256 age;
-        bool isDoctor;
+        string dateOfBirth;
+        uint age;
         }
         struct PatientMedicalDetails{
+            string date;
         address walletAddress;
         bool isAlcoholic;
         bool isSmoker;
@@ -40,6 +35,7 @@ contract PatientDetails is DoctorDetails {
         string pastMedicationDetails_IfAny;
         }
         struct PatientHealthCondition{
+            string date;
         address walletAddress;
         address physician;
         string Department_uint;
@@ -52,8 +48,9 @@ contract PatientDetails is DoctorDetails {
     mapping(address=> PatientMedicalDetails)public PatientsMedicalDetails;
     mapping (address=>PatientHealthCondition[])public HealthCondition;
     mapping(address=>string[])public patientsStoredData;
-    uint256 public totalPatient;
+    uint public totalPatient;
     function AddPatientsMedicalDetails(
+        string memory _date,
         address _walletAddress,
         bool _isAlcoholic,
         bool _isSmoker,
@@ -62,10 +59,12 @@ contract PatientDetails is DoctorDetails {
         string memory _physicalActivityLevel,
         string memory _pastMedicationDetails_IfAny
         )
-        public _onlyAdmin {
+        public _onlyDoctor {
             require(PatientsMedicalDetails[_walletAddress].walletAddress!=_walletAddress,"Patient medical details already exist!!");
             require(_walletAddress!=address(0), "Kindly fill all the mandatory feilds!!");
-            PatientsMedicalDetails[_walletAddress]=PatientMedicalDetails(_walletAddress,
+            PatientsMedicalDetails[_walletAddress]=PatientMedicalDetails(
+                _date,
+            _walletAddress,
             _isAlcoholic,
             _isSmoker,
             _isSmokelessTobaccoUser,
@@ -78,30 +77,30 @@ contract PatientDetails is DoctorDetails {
             } 
     }
      function AddPatientsPersonalDetails(
-        bool _isAlive,
+string memory date,
         string memory _name,
         address _walletAddress,
         string memory _gender,
         string memory _Occupation,
-        uint256 _dayOfBirth,
-        uint256 _monthOfBirth,
-        uint256 _yearOfBirth,
-        bool _isDoctor)public _onlyAdmin{
+     string memory _dateOfBirth,
+     uint _age
+       )public _onlyDoctor{
             require(PatientsPersonalDetails[_walletAddress].walletAddress!=_walletAddress,"Patient's personal details already exist!!");
-        require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0 && _dayOfBirth!=0 && _dayOfBirth<30 && _monthOfBirth!=0 && _monthOfBirth<12 && _yearOfBirth!=0 ,"Kindly fill all the mandatory feilds!!");
+        require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0 ,"Kindly fill all the mandatory feilds!!");
     
-        uint256 age=getAge(_yearOfBirth);
+        // uint age=getAge(_yearOfBirth);
+        uint age=_age;
        
-        PatientsPersonalDetails[_walletAddress] = PatientPersonalDetails(_isAlive,
+        PatientsPersonalDetails[_walletAddress] = PatientPersonalDetails(
+            date,
+            // _isAlive,
         _name,
         _walletAddress,
         _gender,
         _Occupation,
-        _dayOfBirth,
-        _monthOfBirth,
-        _yearOfBirth,
-        age,
-        _isDoctor
+        _dateOfBirth,
+       
+        age
         );
         if (PatientsMedicalDetails[_walletAddress].walletAddress==_walletAddress) {
             totalPatient++;
@@ -109,6 +108,7 @@ contract PatientDetails is DoctorDetails {
     }
     
     function addPatientHealthDetails(
+        string memory _date,
         address _walletAddress,
         address _physician,
         string memory _Department_uint,
@@ -117,14 +117,16 @@ contract PatientDetails is DoctorDetails {
         string memory _RespiratoryRate,
         string memory _Dosage
 
-        ) public _onlyAdmin {
+        ) public _onlyDoctor {
 
-        require(PatientsPersonalDetails[_walletAddress].isAlive, "We regret to say that,this Patient is dead and cannot add Health details anymore!!");
+        // require(PatientsPersonalDetails[_walletAddress].isAlive, "We regret to say that,this Patient is dead and cannot add Health details anymore!!");
         require(PatientsPersonalDetails[_walletAddress].walletAddress==_walletAddress && PatientsMedicalDetails[_walletAddress].walletAddress==_walletAddress,"Incorrect Patient wallet address or The Patient detail specific to personal or past medical history of the address provided not available in the chain!! ");
 
         require(DoctorsPersonalInfo[_walletAddress].walletAddress==_physician, "Incorrect Physician wallet address or The Physician detail for the address provided not available in the chain!! ");
 
-        HealthCondition[_walletAddress].push(PatientHealthCondition(_walletAddress,
+        HealthCondition[_walletAddress].push(PatientHealthCondition(
+            _date,
+        _walletAddress,
         _physician,
         _Department_uint,
         _BloodPressure,
@@ -162,6 +164,7 @@ contract PatientDetails is DoctorDetails {
     
 // }
 function EditPatinetMedicalDetails(
+    string memory _date,
       address _walletAddress,
         bool _isAlcoholic,
         bool _isSmoker,
@@ -170,11 +173,13 @@ function EditPatinetMedicalDetails(
         string memory _physicalActivityLevel,
         string memory _pastMedicationDetails_IfAny
        
-)public _onlyAdmin {
+)public _onlyDoctor {
     require(_walletAddress!=address(0) ,"Kindly fill all the mandatory feilds!!");
 
         require(PatientsPersonalDetails[_walletAddress].walletAddress==_walletAddress,"Incorrect Patient wallet address or The Patient detail for the address provided not available in the chain!!");
-        PatientsMedicalDetails[_walletAddress]=PatientMedicalDetails(_walletAddress,
+        PatientsMedicalDetails[_walletAddress]=PatientMedicalDetails(
+        _date,
+        _walletAddress,
         _isAlcoholic,
         _isSmoker,
         _isSmokelessTobaccoUser,
@@ -183,34 +188,31 @@ function EditPatinetMedicalDetails(
         _pastMedicationDetails_IfAny
         );
 }
-    function EditPatientPersonalDetails(bool _isAlive,
+    function EditPatientPersonalDetails(string memory _date,
         string memory _name,
         address _walletAddress,
         string memory _gender,
         string memory _Occupation,
-        uint256 _dayOfBirth,
-        uint256 _monthOfBirth,
-        uint256 _yearOfBirth,
-        bool _isDoctor)public _onlyAdmin(){
+        string memory _dateOfBirth,
+        uint _age)public _onlyDoctor(){
            
-        require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0 && _dayOfBirth!=0 &&_monthOfBirth!=0 && _yearOfBirth!=0  ,"Kindly fill all the mandatory feilds!!");
+        require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0   ,"Kindly fill all the mandatory feilds!!");
 
         require(PatientsPersonalDetails[_walletAddress].walletAddress==_walletAddress,"Incorrect Patient wallet address or The Patient detail for the address provided not available in the chain!!");
             
       
-        uint256 age=getAge(_yearOfBirth);
+        uint age=_age;
 
        
-         PatientsPersonalDetails[_walletAddress] = PatientPersonalDetails( _isAlive,
+         PatientsPersonalDetails[_walletAddress] = PatientPersonalDetails(
+        _date,
+        
         _name,
         _walletAddress,
         _gender,
         _Occupation,
-        _dayOfBirth,
-        _monthOfBirth,
-        _yearOfBirth,
-        age,
-        _isDoctor
+        _dateOfBirth,
+        age
         );
     }
 }
