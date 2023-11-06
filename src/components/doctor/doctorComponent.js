@@ -5,48 +5,6 @@ import Connectivity from "../connectivity/connectivity";
 
 export default function DoctorComponent() {
 
-    const { address, isConnected } = useAccount();
-    const [ownerAddress, setOwnerAddress] = useState("");
-    const { chain } = useNetwork();
-
-    console.log(address);
-
-
-  
-    useState(() => {
-      if (isConnected) {
-        setGlobalState("connectedAccount", isConnected);
-      }
-    }, [isConnected]);
-  
-    const { data } = useBalance({
-      address: address,
-    });
-  
-    const { openAccountModal } = useAccountModal();
-  
-    const { openConnectModal } = useConnectModal();
-  
-    const { openChainModal } = useChainModal();
-  
-    const [connectedAccount] = useGlobalState("connectedAccount");
-  
-    useEffect(() => {
-      async function fetchData() {
-        try {
-          const checkConnectionState = getGlobalState("connectedAccount");
-          if (isConnected) {
-            await blockchain.isWallectConnected();
-            const ownerAddress = await blockchain.getContractOwner();
-            console.log(ownerAddress);
-            setOwnerAddress(ownerAddress.toLowerCase());
-            
-          }
-        } catch (error) {}
-      }
-      fetchData();
-    }, [isConnected]);
-
 
   return (
     <>
