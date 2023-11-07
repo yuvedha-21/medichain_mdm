@@ -6,8 +6,20 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import * as blockchain from "../../services/Blockchain";
-// import * as ipfs from "../../services/IPFS_Uploader"
-// import fs from 'fs';
+
+//Adding New owner Address Validation
+const OwnerAddressSchema = yup.object().shape({
+  newOwnerAddress: yup.string().required("* Wallet Address is required."),
+});
+
+//Removing New owner Address Validation
+const RemoveOwnerSchema = yup.object().shape({
+  ownerAddressToRemove: yup
+    .string()
+    .required("Owner Address to Remove is required."),
+});
+
+//Adding New Doctor Address Validation
 const SignupSchema = yup.object().shape({
   name: yup.string().required("*Please enter your name."),
   email: yup
@@ -34,27 +46,83 @@ const SignupSchema = yup.object().shape({
     .required(),
 });
 
+// Checking Doctor Address validation
+
+const doctorAddressSchema = yup.object().shape({
+  doctorAddressToCheck: yup
+    .string()
+    .required("* Doctor Address to check is required."),
+});
+
+
+
+
 export default function OwnerPrivilages() {
-  const [fileContent, setFileContent] = useState(null);
+
+const [isValidDoctor, setIsValidDoctor] = useState("false");
+
+console.log(isValidDoctor);
+
+  //Add owner Address
+  const {
+    register: registerOwner,
+    handleSubmit: handleSubmitOwnerAddress,
+    formState: { errors: ownerAddressErrors },
+  } = useForm({
+    resolver: yupResolver(OwnerAddressSchema),
+  });
+
+  //Remove owner Address
+  const {
+    register: registerRemoveOwner,
+    handleSubmit: handleSubmitRemoveOwnerAddress,
+    formState: { errors: removeOwnerErrors },
+  } = useForm({
+    resolver: yupResolver(RemoveOwnerSchema),
+  });
+
+  //Add Doctor Details
   const {
     register,
-    handleSubmit,
-    formState: { errors },
+    handleSubmit: handleSubmitDoctorDetails,
+    formState: { errors: doctorDetailsErrors },
   } = useForm({
     resolver: yupResolver(SignupSchema),
   });
 
-  // const [allDetails, setAllDetails] = useState({
-  //   doctorDetails: [],
-  // });
+  //validate doctor Address
+  const {
+    register: doctorAddress,
+    handleSubmit: handleSubmitDoctorAddress,
+    formState: { errors: doctorAddressErrors },
+  } = useForm({
+    resolver: yupResolver(doctorAddressSchema),
+  });
 
-  // console.log(allDetails);
+  //Function Call On Add owner Address
+  const newOwnerAddress = async (data) => {
+    try {
+      const ownerDetails = await blockchain.AddOwner(data.newOwnerAddress);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
+  //Function Call On Remove owner Address
+  const removeOwnerAddress = async (data) => {
+    try {
+      const removedOwner = await blockchain.removeOwner(
+        data.ownerAddressToRemove
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  //Function Call On Add Doctor Details
   const onSubmitOfDoctorDetails = async (data) => {
-    // Extract personal details
     const { name, email, dob, walletAddress, mobileNumber, age } = data;
 
-    // Extract professional details
     const {
       ProfessionalWalletAddress,
       medicalCollege,
@@ -63,9 +131,6 @@ export default function OwnerPrivilages() {
       MedicalLicenceNumber,
     } = data;
 
-
-
-    // Create an object for personal details
     const personalDetails = {
       name,
       email,
@@ -75,7 +140,6 @@ export default function OwnerPrivilages() {
       age,
     };
 
-    // Create an object for professional details
     const professionalDetails = {
       ProfessionalWalletAddress,
       medicalCollege,
@@ -87,6 +151,19 @@ export default function OwnerPrivilages() {
     const doctorDetails = await blockchain.addDoctorDetails(personalDetails,professionalDetails);
 
   };
+  const doctorAddressToCheck = async (data) => {
+    try {
+      console.log("mugu");
+      const validatedoctor = await blockchain.isDoctor(
+        data.doctorAddressToCheck
+      );
+
+      setIsValidDoctor(validatedoctor)
+      console.log(validatedoctor);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 const click=async()=>{
  await blockchain.uploadIPFS_to_contract("tmrw",1234,"yuvi","cardio","Normal","bad","good","ok")
 }
@@ -95,17 +172,79 @@ const click=async()=>{
       <Accordion>
         <Accordion.Item eventKey="0">
           <Accordion.Header>Add Owner Address</Accordion.Header>
-          <Accordion.Body>hello</Accordion.Body>
+          <Accordion.Body>
+            <div className="container">
+              <form onSubmit={handleSubmitOwnerAddress(newOwnerAddress)}>
+                <div className="form-group row mt-2">
+                  <div className="col-lg-6 text-center">
+                    <label>Wallet Address Of New Owner:</label>
+                  </div>
+                  <div className="col-lg-6">
+                    <input
+                      type="text"
+                      className="form-control"
+                      {...registerOwner("newOwnerAddress")}
+                    />
+                    {ownerAddressErrors.newOwnerAddress && (
+                      <p className="text-danger fw-bold">
+                        {ownerAddressErrors.newOwnerAddress.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-3 mb-3 text-center">
+                  <button type="submit" className="w-50">
+                    Add Owner
+                  </button>
+                </div>
+              </form>
+            </div>
+          </Accordion.Body>
         </Accordion.Item>
+
         <Accordion.Item eventKey="1">
           <Accordion.Header>Remove Owner Address</Accordion.Header>
-          <Accordion.Body>hai</Accordion.Body>
+          <Accordion.Body>
+            <div className="container">
+              <form
+                onSubmit={handleSubmitRemoveOwnerAddress(removeOwnerAddress)}
+              >
+                <div className="form-group row mt-2">
+                  <div className="col-lg-6 text-center">
+                    <label>Owner Address to Remove:</label>
+                  </div>
+                  <div className="col-lg-6">
+                    <input
+                      type="text"
+                      className="form-control"
+                      {...registerRemoveOwner("ownerAddressToRemove")}
+                    />
+                    {removeOwnerErrors.ownerAddressToRemove && (
+                      <p className="text-danger fw-bold">
+                        {removeOwnerErrors.ownerAddressToRemove.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-3 mb-3 text-center">
+                  <button type="submit" className="w-50">
+                    Remove Owner
+                  </button>
+                </div>
+              </form>
+            </div>
+          </Accordion.Body>
         </Accordion.Item>
+
         <Accordion.Item eventKey="2">
           <Accordion.Header>Add Doctor Details</Accordion.Header>
           <Accordion.Body>
             <div className="container">
-              <form onSubmit={handleSubmit(onSubmitOfDoctorDetails)}>
+              <form
+                onSubmit={handleSubmitDoctorDetails(onSubmitOfDoctorDetails)}
+              >
                 <div className="form-group row">
                   <div className="col-lg-6">
                     <div className="row mt-2 text-center mb-2 fw-bold">
@@ -121,9 +260,9 @@ const click=async()=>{
                           className="form-control"
                           {...register("name")}
                         />
-                        {errors.name && (
+                        {doctorDetailsErrors.name && (
                           <p className="text-danger fw-bold">
-                            {errors.name.message}
+                            {doctorDetailsErrors.name.message}
                           </p>
                         )}
                       </div>
@@ -139,9 +278,9 @@ const click=async()=>{
                           className="form-control"
                           {...register("email")}
                         />
-                        {errors.email && (
+                        {doctorDetailsErrors.email && (
                           <p className="text-danger fw-bold">
-                            {errors.email.message}
+                            {doctorDetailsErrors.email.message}
                           </p>
                         )}
                       </div>
@@ -157,9 +296,9 @@ const click=async()=>{
                           className="form-control"
                           {...register("mobileNumber")}
                         />
-                        {errors.mobileNumber && (
+                        {doctorDetailsErrors.mobileNumber && (
                           <p className="text-danger fw-bold">
-                            {errors.mobileNumber.message}
+                            {doctorDetailsErrors.mobileNumber.message}
                           </p>
                         )}
                       </div>
@@ -175,9 +314,9 @@ const click=async()=>{
                           className="form-control"
                           {...register("age")}
                         />
-                        {errors.age && (
+                        {doctorDetailsErrors.age && (
                           <p className="text-danger fw-bold">
-                            {errors.age.message}
+                            {doctorDetailsErrors.age.message}
                           </p>
                         )}
                       </div>
@@ -193,9 +332,9 @@ const click=async()=>{
                           className="form-control"
                           {...register("dob")}
                         />
-                        {errors.dob && (
+                        {doctorDetailsErrors.dob && (
                           <p className="text-danger fw-bold">
-                            {errors.dob.message}
+                            {doctorDetailsErrors.dob.message}
                           </p>
                         )}
                       </div>
@@ -211,9 +350,9 @@ const click=async()=>{
                           className="form-control"
                           {...register("walletAddress")}
                         />
-                        {errors.walletAddress && (
+                        {doctorDetailsErrors.walletAddress && (
                           <p className="text-danger fw-bold">
-                            {errors.walletAddress.message}
+                            {doctorDetailsErrors.walletAddress.message}
                           </p>
                         )}
                       </div>
@@ -235,9 +374,12 @@ const click=async()=>{
                           className="form-control"
                           {...register("ProfessionalWalletAddress")}
                         />
-                        {errors.ProfessionalWalletAddress && (
+                        {doctorDetailsErrors.ProfessionalWalletAddress && (
                           <p className="text-danger fw-bold">
-                            {errors.ProfessionalWalletAddress.message}
+                            {
+                              doctorDetailsErrors.ProfessionalWalletAddress
+                                .message
+                            }
                           </p>
                         )}
                       </div>
@@ -253,9 +395,9 @@ const click=async()=>{
                           className="form-control"
                           {...register("medicalCollege")}
                         />
-                        {errors.medicalCollege && (
+                        {doctorDetailsErrors.medicalCollege && (
                           <p className="text-danger fw-bold">
-                            {errors.medicalCollege.message}
+                            {doctorDetailsErrors.medicalCollege.message}
                           </p>
                         )}
                       </div>
@@ -271,9 +413,9 @@ const click=async()=>{
                           className="form-control"
                           {...register("MedicalLicenceNumber")}
                         />
-                        {errors.MedicalLicenceNumber && (
+                        {doctorDetailsErrors.MedicalLicenceNumber && (
                           <p className="text-danger fw-bold">
-                            {errors.MedicalLicenceNumber.message}
+                            {doctorDetailsErrors.MedicalLicenceNumber.message}
                           </p>
                         )}
                       </div>
@@ -289,9 +431,9 @@ const click=async()=>{
                           className="form-control"
                           {...register("specialization")}
                         />
-                        {errors.specialization && (
+                        {doctorDetailsErrors.specialization && (
                           <p className="text-danger fw-bold">
-                            {errors.specialization.message}
+                            {doctorDetailsErrors.specialization.message}
                           </p>
                         )}
                       </div>
@@ -307,9 +449,9 @@ const click=async()=>{
                           className="form-control"
                           {...register("experience")}
                         />
-                        {errors.experience && (
+                        {doctorDetailsErrors.experience && (
                           <p className="text-danger fw-bold">
-                            {errors.experience.message}
+                            {doctorDetailsErrors.experience.message}
                           </p>
                         )}
                       </div>
@@ -323,15 +465,49 @@ const click=async()=>{
             </div>
           </Accordion.Body>
         </Accordion.Item>
+
         <Accordion.Item eventKey="3">
           <Accordion.Header>Edit Doctor Details</Accordion.Header>
-          <Accordion.Body>hai</Accordion.Body>
+          <Accordion.Body>
+            {isValidDoctor ? (
+              <div className="container">
+              <form onSubmit={handleSubmitDoctorAddress(doctorAddressToCheck)}>
+                <div className="form-group row mt-2">
+                  <div className="col-lg-6 text-center">
+                    <label>Enter The Doctor Wallet Address:</label>
+                  </div>
+                  <div className="col-lg-6">
+                    <input
+                      type="text"
+                      className="form-control"
+                      {...doctorAddress("doctorAddressToCheck")}
+                    />
+                    {doctorAddressErrors.doctorAddressToCheck && (
+                      <p className="text-danger fw-bold">
+                        {doctorAddressErrors.doctorAddressToCheck.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-3 mb-3 text-center">
+                  <button type="submit" className="w-50">
+                    check Doctor
+                  </button>
+                </div>
+              </form>
+            </div>
+            ) : (
+              "mugunth"
+            )}
+            
+          </Accordion.Body>
         </Accordion.Item>
+
         <Accordion.Item eventKey="4">
-          <Accordion.Header>Remove Doctor Details</Accordion.Header>
+          <Accordion.Header>Remove Doctor Access</Accordion.Header>
           <Accordion.Body>hai</Accordion.Body>
         </Accordion.Item>
-      
       </Accordion>
       <button onClick={click}>hello</button>
     </>

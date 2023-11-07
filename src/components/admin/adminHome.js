@@ -9,16 +9,15 @@ import {
   useChainModal,
 } from "@rainbow-me/rainbowkit";
 import corporate from "../assets/doctor/corporate.png";
-import OwnerPrivilages from "./ownerPrivilages";
 
-export default function Ownerhome() {
+export default function AdminHome() {
   const { address, isConnected } = useAccount();
 //   console.log(address);
   const [ownerAddress, setOwnerAddress] = useState("");
 //   console.log(ownerAddress);
   const [isowner, setIsowner] = useState("false");
   const { chain } = useNetwork();
-  // console.log(isowner);
+//   console.log(isowner);
 
   useState(() => {
     if (isConnected) {
@@ -108,7 +107,7 @@ export default function Ownerhome() {
             </div>
           </div>
 
-          {isConnected && isowner ? <OwnerPrivilages/> : null}
+          {isConnected && isowner ? null : null}
         </div>
       </div>
     </>
