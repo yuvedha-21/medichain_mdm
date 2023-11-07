@@ -1,116 +1,17 @@
-import React, { useState } from "react";
-import Accordion from "react-bootstrap/Accordion";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-import * as blockchain from "../../services/Blockchain";
+import React from 'react'
 
-const SignupSchema = yup.object().shape({
-  name: yup.string().required("*Please enter your name."),
-  email: yup
-    .string()
-    .email("*Please enter a valid email address.")
-    .required("*Email is required."),
-  dob: yup.date().required("*Please select a date of birth."),
-  walletAddress: yup.string().required("*walletAddress is required."),
-  mobileNumber: yup.string().matches(/^\d{10}$/),
-  age: yup.number().required().positive().integer(),
-  ProfessionalWalletAddress: yup
-    .string()
-    .required("*walletAddress is required."),
-  medicalCollege: yup.string().required("*medicalCollege is required."),
-  specialization: yup.string().required("*specialization is required."),
-  experience: yup
-    .number()
-    .positive()
-    .integer()
-    .required("*Enter your experience."),
-  MedicalLicenceNumber: yup
-    .string()
-    .matches(/^[A-Z0-9-]+$/, "*Invalid license number format")
-    .required(),
-});
-
-export default function SuperOwnerComponent() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(SignupSchema),
-  });
-
-  const [allDetails, setAllDetails] = useState({
-    doctorDetails: [],
-  });
-
-  console.log(allDetails);
-
-  const onSubmitOfDoctorDetails = async (data) => {
-    // Extract personal details
-    const { name, email, dob, walletAddress, mobileNumber, age } = data;
-    console.log(name);
-    // Extract professional details
-    const {
-      ProfessionalWalletAddress,
-      medicalCollege,
-      specialization,
-      experience,
-      MedicalLicenceNumber,
-    } = data;
-
-    // Create an object for personal details
-    const personalDetails = {
-      name,
-      email,
-      dob,
-      walletAddress,
-      mobileNumber,
-      age,
-    };
-    // Create an object for professional details
-    const professionalDetails = {
-      ProfessionalWalletAddress,
-      medicalCollege,
-      specialization,
-      experience,
-      MedicalLicenceNumber,
-    };
-    console.log(professionalDetails);
-
-    // const doctorDetails = [personalDetails, professionalDetails];
-
-    // setAllDetails(doctorDetails);
-    // setAllDetails(() => ({
-    //   doctorDetails: [personalDetails, professionalDetails],
-    // }));
-
-    // const doctorDetails = await blockchain.addDoctorDetails(
-    //   personalDetails,
-    //   professionalDetails
-    // );
-    await blockchain.getDoctorDetails(
-      "0xE1a0E1DbDC7498eacdAEcDcAF06eA423ae68721E"
-    );
-    // console.log(doctorDetails);
-  };
-
+export default function AdminPrivilages() {
   return (
     <>
-      <Accordion>
+    <Accordion>
+
         <Accordion.Item eventKey="0">
-          <Accordion.Header>Add Owner Address</Accordion.Header>
-          <Accordion.Body>hello</Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="1">
-          <Accordion.Header>Remove Owner Address</Accordion.Header>
-          <Accordion.Body>hai</Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="2">
           <Accordion.Header>Add Doctor Details</Accordion.Header>
           <Accordion.Body>
             <div className="container">
-              <form onSubmit={handleSubmit(onSubmitOfDoctorDetails)}>
+              <form
+                onSubmit={handleSubmitDoctorDetails(onSubmitOfDoctorDetails)}
+              >
                 <div className="form-group row">
                   <div className="col-lg-6">
                     <div className="row mt-2 text-center mb-2 fw-bold">
@@ -126,9 +27,9 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("name")}
                         />
-                        {errors.name && (
+                        {doctorDetailsErrors.name && (
                           <p className="text-danger fw-bold">
-                            {errors.name.message}
+                            {doctorDetailsErrors.name.message}
                           </p>
                         )}
                       </div>
@@ -144,9 +45,9 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("email")}
                         />
-                        {errors.email && (
+                        {doctorDetailsErrors.email && (
                           <p className="text-danger fw-bold">
-                            {errors.email.message}
+                            {doctorDetailsErrors.email.message}
                           </p>
                         )}
                       </div>
@@ -162,9 +63,9 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("mobileNumber")}
                         />
-                        {errors.mobileNumber && (
+                        {doctorDetailsErrors.mobileNumber && (
                           <p className="text-danger fw-bold">
-                            {errors.mobileNumber.message}
+                            {doctorDetailsErrors.mobileNumber.message}
                           </p>
                         )}
                       </div>
@@ -180,9 +81,9 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("age")}
                         />
-                        {errors.age && (
+                        {doctorDetailsErrors.age && (
                           <p className="text-danger fw-bold">
-                            {errors.age.message}
+                            {doctorDetailsErrors.age.message}
                           </p>
                         )}
                       </div>
@@ -198,9 +99,9 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("dob")}
                         />
-                        {errors.dob && (
+                        {doctorDetailsErrors.dob && (
                           <p className="text-danger fw-bold">
-                            {errors.dob.message}
+                            {doctorDetailsErrors.dob.message}
                           </p>
                         )}
                       </div>
@@ -216,9 +117,9 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("walletAddress")}
                         />
-                        {errors.walletAddress && (
+                        {doctorDetailsErrors.walletAddress && (
                           <p className="text-danger fw-bold">
-                            {errors.walletAddress.message}
+                            {doctorDetailsErrors.walletAddress.message}
                           </p>
                         )}
                       </div>
@@ -240,9 +141,12 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("ProfessionalWalletAddress")}
                         />
-                        {errors.ProfessionalWalletAddress && (
+                        {doctorDetailsErrors.ProfessionalWalletAddress && (
                           <p className="text-danger fw-bold">
-                            {errors.ProfessionalWalletAddress.message}
+                            {
+                              doctorDetailsErrors.ProfessionalWalletAddress
+                                .message
+                            }
                           </p>
                         )}
                       </div>
@@ -258,9 +162,9 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("medicalCollege")}
                         />
-                        {errors.medicalCollege && (
+                        {doctorDetailsErrors.medicalCollege && (
                           <p className="text-danger fw-bold">
-                            {errors.medicalCollege.message}
+                            {doctorDetailsErrors.medicalCollege.message}
                           </p>
                         )}
                       </div>
@@ -276,9 +180,9 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("MedicalLicenceNumber")}
                         />
-                        {errors.MedicalLicenceNumber && (
+                        {doctorDetailsErrors.MedicalLicenceNumber && (
                           <p className="text-danger fw-bold">
-                            {errors.MedicalLicenceNumber.message}
+                            {doctorDetailsErrors.MedicalLicenceNumber.message}
                           </p>
                         )}
                       </div>
@@ -294,9 +198,9 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("specialization")}
                         />
-                        {errors.specialization && (
+                        {doctorDetailsErrors.specialization && (
                           <p className="text-danger fw-bold">
-                            {errors.specialization.message}
+                            {doctorDetailsErrors.specialization.message}
                           </p>
                         )}
                       </div>
@@ -312,9 +216,9 @@ export default function SuperOwnerComponent() {
                           className="form-control"
                           {...register("experience")}
                         />
-                        {errors.experience && (
+                        {doctorDetailsErrors.experience && (
                           <p className="text-danger fw-bold">
-                            {errors.experience.message}
+                            {doctorDetailsErrors.experience.message}
                           </p>
                         )}
                       </div>
@@ -328,20 +232,51 @@ export default function SuperOwnerComponent() {
             </div>
           </Accordion.Body>
         </Accordion.Item>
-        <Accordion.Item eventKey="3">
+
+        <Accordion.Item eventKey="1">
           <Accordion.Header>Edit Doctor Details</Accordion.Header>
-          <Accordion.Body>hai</Accordion.Body>
+          <Accordion.Body>
+            {isValidDoctor ? (
+              <div className="container">
+              <form onSubmit={handleSubmitDoctorAddress(doctorAddressToCheck)}>
+                <div className="form-group row mt-2">
+                  <div className="col-lg-6 text-center">
+                    <label>Enter The Doctor Wallet Address:</label>
+                  </div>
+                  <div className="col-lg-6">
+                    <input
+                      type="text"
+                      className="form-control"
+                      {...doctorAddress("doctorAddressToCheck")}
+                    />
+                    {doctorAddressErrors.doctorAddressToCheck && (
+                      <p className="text-danger fw-bold">
+                        {doctorAddressErrors.doctorAddressToCheck.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="mt-3 mb-3 text-center">
+                  <button type="submit" className="w-50">
+                    check Doctor
+                  </button>
+                </div>
+              </form>
+            </div>
+            ) : (
+              "mugunth"
+            )}
+            
+          </Accordion.Body>
         </Accordion.Item>
-        <Accordion.Item eventKey="4">
-          <Accordion.Header>Remove Doctor Details</Accordion.Header>
-          <Accordion.Body>hai</Accordion.Body>
-        </Accordion.Item>
-        <Accordion.Item eventKey="5">
-          <Accordion.Header>View Details</Accordion.Header>
+
+        <Accordion.Item eventKey="2">
+          <Accordion.Header>Remove Doctor Access</Accordion.Header>
           <Accordion.Body>hai</Accordion.Body>
         </Accordion.Item>
       </Accordion>
+    
     </>
-  );
+  )
 }
-

@@ -37,6 +37,10 @@ export default function Headerbar() {
                 <div className="glow-on-hover">Owner</div>
               </NavLink>
 
+              <NavLink href="/admin">
+                <div className="glow-on-hover">Admin</div>
+              </NavLink>
+
               <NavLink href="/doctor">
                 <div className="glow-on-hover">Doctor</div>
               </NavLink>

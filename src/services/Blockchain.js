@@ -60,9 +60,12 @@ const isWallectConnected = async () => {
 };
 //fetch owner address
 const getContractOwner = async () => {
+
   try {
+   
     const connectedAccount = getGlobalState("connectedAccount");
     const contract = await GetEthereumContract();
+    console.log(contract);
     const owner = await contract.superOwner();
     console.log(owner);
     isOwner(connectedAccount);
@@ -78,6 +81,7 @@ const isDoctor = async (address) => {
     const connectedAccount = getGlobalState("connectedAccount");
     const contract = await GetEthereumContract();
     const doctor = await contract.isDoctor(connectedAccount);
+    return doctor;
     console.log(doctor);
   } catch (err) {
     console.log(err);
@@ -160,6 +164,7 @@ const removeDoctorAccess=async(address)=>{
 }
 
 const AddOwner=async(address)=>{
+  console.log(address);
   const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
   let addAccess=await contract.addOwner(address)
@@ -179,7 +184,7 @@ const GetEthereumContract = async () => {
   // console.log(checkConnectionState);
   // const {isConnected} = useAccount();
   // console.log(connectedAccount);
-  if (!connectedAccount) {
+  if (connectedAccount) {
     //check whether device pc or mobile
     const provider = new ethers.providers.Web3Provider(ethereum); //pc
     const signer = provider.getSigner();
@@ -242,4 +247,6 @@ export {
   editDoctorDetails,
   getDoctorDetails,
   removeDoctorAccess,
+  AddOwner,
+  removeOwner,
 };
