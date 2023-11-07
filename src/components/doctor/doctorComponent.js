@@ -16,7 +16,7 @@ export default function DoctorComponent() {
             </div>
             <div className="col-lg-5">
               <h1 className="doctorLandingPageh1 ">MediChain <br/> Management To <br/> Track  Patient History</h1>
-              <Connectivity/>
+              <Connectivity />
             </div>
           </div>
         </div>

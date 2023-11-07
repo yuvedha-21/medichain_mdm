@@ -10,49 +10,59 @@ import {
 } from "@rainbow-me/rainbowkit";
 
 export default function Connectivity() {
+  const { address, isConnected } = useAccount();
+  const [ownerAddress, setOwnerAddress] = useState("");
+  const [isowner, setIsowner] = useState('false');
+  const { chain } = useNetwork();
+  console.log(isowner);
 
-    const { address, isConnected } = useAccount();
-    const [ownerAddress, setOwnerAddress] = useState("");
-    const { chain } = useNetwork();
+  useState(() => {
+    if (isConnected) {
+      setGlobalState("connectedAccount", isConnected);
+    }
+  }, [isConnected]);
 
-    console.log(address);
+  const { openAccountModal } = useAccountModal();
 
+  const { openConnectModal } = useConnectModal();
 
-  
-    useState(() => {
+  const { openChainModal } = useChainModal();
+
+  const [connectedAccount] = useGlobalState("connectedAccount");
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const checkConnectionState = getGlobalState("connectedAccount");
+        if (isConnected) {
+          await blockchain.isWallectConnected();
+          const ownerAddress = await blockchain.getContractOwner();
+
+          setOwnerAddress(ownerAddress);
+        }
+      } catch (error) {
+        // Handle errors
+      }
+    }
+    fetchData();
+  }, [isConnected]);
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
       if (isConnected) {
-        setGlobalState("connectedAccount", isConnected);
+        if (ownerAddress.toLowerCase() === address.toLowerCase()) {
+          setIsowner(true)
+        } else {
+          setIsowner(false)
+        }
       }
-    }, [isConnected]);
+    }, 1000); // 5000 milliseconds = 5 seconds
   
-    const { data } = useBalance({
-      address: address,
-    });
+    return () => {
+      clearTimeout(timeoutId); // Clear the timeout if the component unmounts before 5 seconds
+    };
+  }, [isConnected, ownerAddress]);
   
-    const { openAccountModal } = useAccountModal();
-  
-    const { openConnectModal } = useConnectModal();
-  
-    const { openChainModal } = useChainModal();
-  
-    const [connectedAccount] = useGlobalState("connectedAccount");
-  
-    useEffect(() => {
-      async function fetchData() {
-        try {
-          const checkConnectionState = getGlobalState("connectedAccount");
-          if (isConnected) {
-            await blockchain.isWallectConnected();
-            const ownerAddress = await blockchain.getContractOwner();
-            console.log(ownerAddress);
-            setOwnerAddress(ownerAddress.toLowerCase());
-            
-          }
-        } catch (error) {}
-      }
-      fetchData();
-    }, [isConnected]);
-
 
   return (
     <>
