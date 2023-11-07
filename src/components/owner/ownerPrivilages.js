@@ -31,7 +31,7 @@ const SignupSchema = yup.object().shape({
     .required(),
 });
 
-export default function SuperOwnerComponent() {
+export default function OwnerPrivilages() {
   const {
     register,
     handleSubmit,
@@ -40,16 +40,16 @@ export default function SuperOwnerComponent() {
     resolver: yupResolver(SignupSchema),
   });
 
-  const [allDetails, setAllDetails] = useState({
-    doctorDetails: [],
-  });
+  // const [allDetails, setAllDetails] = useState({
+  //   doctorDetails: [],
+  // });
 
-  console.log(allDetails);
+  // console.log(allDetails);
 
   const onSubmitOfDoctorDetails = async (data) => {
     // Extract personal details
     const { name, email, dob, walletAddress, mobileNumber, age } = data;
-    console.log(name);
+
     // Extract professional details
     const {
       ProfessionalWalletAddress,
@@ -58,6 +58,8 @@ export default function SuperOwnerComponent() {
       experience,
       MedicalLicenceNumber,
     } = data;
+
+
 
     // Create an object for personal details
     const personalDetails = {
@@ -68,6 +70,7 @@ export default function SuperOwnerComponent() {
       mobileNumber,
       age,
     };
+
     // Create an object for professional details
     const professionalDetails = {
       ProfessionalWalletAddress,
@@ -76,23 +79,9 @@ export default function SuperOwnerComponent() {
       experience,
       MedicalLicenceNumber,
     };
-    console.log(professionalDetails);
 
-    // const doctorDetails = [personalDetails, professionalDetails];
+    const doctorDetails = await blockchain.addDoctorDetails(personalDetails,professionalDetails);
 
-    // setAllDetails(doctorDetails);
-    // setAllDetails(() => ({
-    //   doctorDetails: [personalDetails, professionalDetails],
-    // }));
-
-    // const doctorDetails = await blockchain.addDoctorDetails(
-    //   personalDetails,
-    //   professionalDetails
-    // );
-    await blockchain.getDoctorDetails(
-      "0xE1a0E1DbDC7498eacdAEcDcAF06eA423ae68721E"
-    );
-    // console.log(doctorDetails);
   };
 
   return (
@@ -336,10 +325,7 @@ export default function SuperOwnerComponent() {
           <Accordion.Header>Remove Doctor Details</Accordion.Header>
           <Accordion.Body>hai</Accordion.Body>
         </Accordion.Item>
-        <Accordion.Item eventKey="5">
-          <Accordion.Header>View Details</Accordion.Header>
-          <Accordion.Body>hai</Accordion.Body>
-        </Accordion.Item>
+      
       </Accordion>
     </>
   );
