@@ -8,11 +8,11 @@ contract DoctorDetails {
   constructor () {
     owner[msg.sender] = true;
     superOwner = msg.sender;
-    AddAdminAccess(msg.sender);
+    // AddDoctorAccess(msg.sender);
      
   }
      modifier _onlyOwner() {
-        require(owner[msg.sender]==true || msg.sender==superOwner, "Accesseble only for Owners and SuperOwners");
+        require(owner[msg.sender] || msg.sender==superOwner, "Accesseble only for Owners and SuperOwners");
         _;
     }
   modifier _onlyDoctor(){
@@ -44,7 +44,9 @@ contract DoctorDetails {
         uint ExperienceInYear;
         // address[] treatedPatients;
         }
-    address[] public AdminAccess;
+    // DoctorPersonalInfo public _DoctorPersonalInfo;
+    // DoctorProfessionalDetails public _DoctorProfessionalDetails;
+    // address[] public AdminAccess;
     mapping (address=>bool)public DoctorAccess;
     mapping(address=>DoctorPersonalInfo)public DoctorsPersonalInfo;
     mapping (address=>DoctorProfessionalDetails)public Doctors_ProfessionalDetails;
@@ -70,16 +72,16 @@ contract DoctorDetails {
     function removeOwner(address _address)public _superAdmin(){
         owner[_address]=false;
     }
-    function AddAdminAccess(address _walletAddress)public _onlyOwner(){
-        require(owner[msg.sender]=true,"Only owner has privilege to add owner access!!");
+    function AddDoctorAccess(address _walletAddress)public _onlyOwner(){
+        require(owner[msg.sender],"Only owner has privilege to add owner access!!");
         require(!DoctorAccess[_walletAddress], "Address already has admin access");
         require(_walletAddress!=address(0), "Invalid Address");
-        AdminAccess.push(_walletAddress);
+        // AdminAccess.push(_walletAddress);
         DoctorAccess[_walletAddress]=true;
         totalAdmin++;
     }
     
-    function DeleteAdminAccess(address _walletAddress)public _onlyOwner() {
+    function DeleteDoctorAccess(address _walletAddress)public _onlyOwner() {
         require(owner[msg.sender]=true,"Only owner has privilege to delete owner access!!");
         require(_walletAddress!=address(0), "Invalid Address");
         require(DoctorAccess[_walletAddress], "Provided address must be an AdminAccessAddress to remove AdminAccess!!");
@@ -103,7 +105,7 @@ contract DoctorDetails {
                 // new address[](0)
             );
             if (DoctorsPersonalInfo[_walletAddress].walletAddress==_walletAddress) {
-                AddAdminAccess(_walletAddress);
+                AddDoctorAccess(_walletAddress);
                 totalDoctors++;
             }
          }
@@ -133,20 +135,27 @@ require(DoctorsPersonalInfo[_walletAddress].walletAddress!=_walletAddress , "Phy
             );
           
           if (Doctors_ProfessionalDetails[_walletAddress].walletAddress==_walletAddress) {
-              AddAdminAccess(_walletAddress);
+              AddDoctorAccess(_walletAddress);
               totalDoctors++;
           }
             
     }
-    function getDoctor(address _walletAddress) public _onlyOwner view returns(DoctorPersonalInfo memory,DoctorProfessionalDetails memory){
+    function getDoctorPersonalDetails(address _walletAddress) public _onlyOwner view returns(DoctorPersonalInfo memory){
        require(_walletAddress!=address(0),"Wallet Address cannot be empty");
-        require(DoctorsPersonalInfo[_walletAddress].walletAddress==_walletAddress && Doctors_ProfessionalDetails[_walletAddress].walletAddress==_walletAddress ,"Incorrect Doctor wallet address or The Doctor detail for the address provided is not completely available in the chain!!");
+        require(DoctorsPersonalInfo[_walletAddress].walletAddress==_walletAddress  ,"Incorrect Doctor wallet address or The Doctor detail for the address provided is not completely available in the chain!!");
        
-       return (
-            DoctorsPersonalInfo[_walletAddress],Doctors_ProfessionalDetails[_walletAddress]
-        );
+       return DoctorsPersonalInfo[_walletAddress];
        
     }
+
+function getDoctorProfessionalDetails(address _walletAddress) public _onlyOwner view returns(DoctorProfessionalDetails memory){
+       require(_walletAddress!=address(0),"Wallet Address cannot be empty");
+        require( Doctors_ProfessionalDetails[_walletAddress].walletAddress==_walletAddress ,"Incorrect Doctor wallet address or The Doctor detail for the address provided is not completely available in the chain!!");
+       
+       return Doctors_ProfessionalDetails[_walletAddress];
+       
+    }
+
     function EditDoctorProfessionalDetails(address _walletAddress,string memory _MedicalLicenseNumber,
         string memory _Specialization, 
         uint _ExperienceInYear,

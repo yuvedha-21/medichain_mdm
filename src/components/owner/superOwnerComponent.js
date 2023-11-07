@@ -49,7 +49,7 @@ export default function SuperOwnerComponent() {
   const onSubmitOfDoctorDetails = async (data) => {
     // Extract personal details
     const { name, email, dob, walletAddress, mobileNumber, age } = data;
-console.log(name);
+    console.log(name);
     // Extract professional details
     const {
       ProfessionalWalletAddress,
@@ -58,8 +58,6 @@ console.log(name);
       experience,
       MedicalLicenceNumber,
     } = data;
-
-
 
     // Create an object for personal details
     const personalDetails = {
@@ -87,8 +85,14 @@ console.log(name);
     //   doctorDetails: [personalDetails, professionalDetails],
     // }));
 
-    const doctorDetails = await blockchain.addDoctorDetails(personalDetails,professionalDetails);
-    console.log(doctorDetails);
+    // const doctorDetails = await blockchain.addDoctorDetails(
+    //   personalDetails,
+    //   professionalDetails
+    // );
+    await blockchain.getDoctorDetails(
+      "0xE1a0E1DbDC7498eacdAEcDcAF06eA423ae68721E"
+    );
+    // console.log(doctorDetails);
   };
 
   return (

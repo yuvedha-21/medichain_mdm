@@ -134,7 +134,7 @@ string memory date,
         _RespiratoryRate,
         _Dosage
         ));
-        Doctors_ProfessionalDetails[_physician].treatedPatients.push(_walletAddress);
+        // Doctors_ProfessionalDetails[_physician].treatedPatients.push(_walletAddress);
     }
 
       function getPatientDetails(address _walletAddress) public userOrAdmin view returns(PatientPersonalDetails memory,PatientMedicalDetails memory){
