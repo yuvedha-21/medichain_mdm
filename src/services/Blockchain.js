@@ -90,7 +90,7 @@ const isOwner = async (address) => {
     const connectedAccount = getGlobalState("connectedAccount");
     const contract = await GetEthereumContract();
     const owner = await contract.superOwner();
-    if (address.toLowerCase() === owner.toLowerCase()) {
+    if (address === owner) {
       console.log("true");
       return true;
     } else {
