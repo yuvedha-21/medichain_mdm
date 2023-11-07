@@ -52,7 +52,7 @@ export default function Ownerhome() {
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (isConnected) {
-        if (ownerAddress.toLowerCase() === address.toLowerCase()) {
+        if (ownerAddress === address) {
           setIsowner(true);
         } else {
           setIsowner(false);
