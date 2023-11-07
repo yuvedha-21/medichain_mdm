@@ -11,7 +11,7 @@ import { useEffect } from "react";
 let success = "success";
 let info = "info";
 const { ethereum } = window;
-const contractAddress = "0x37fdeD5DA896eA0b28640B544AF46dc72F479db1";
+const contractAddress = "0x417334988352A4be311e4a949e473ab4abA92C97";
 // 0x4ec8Af3f939325EeB5ca468e6ef85fc077cca978
 const contractAbi = abi.abi;
 const privateKey =
