@@ -4,6 +4,7 @@ import axios from "axios";
 
 import { getGlobalState, setGlobalState } from "../store";
 import { ethers } from "ethers";
+import Moralis from 'moralis';
 
 import { useAccount } from "wagmi";
 import { useEffect } from "react";
@@ -11,7 +12,7 @@ import { useEffect } from "react";
 let success = "success";
 let info = "info";
 const { ethereum } = window;
-const contractAddress = "0x417334988352A4be311e4a949e473ab4abA92C97";
+const contractAddress = "0x2794640ccbCd3AFCCaAA29aCB934a29D78c51E51";
 // 0x4ec8Af3f939325EeB5ca468e6ef85fc077cca978
 const contractAbi = abi.abi;
 const privateKey =
@@ -177,7 +178,43 @@ const removeOwner=async(address)=>{
   let removeAccess=await contract.removeOwner(address)
   await removeAccess.wait()
 }
+const uploadIPFS_to_contract=async(address,date,walletAddress,physician,departmentuint,Blood_Pressure,_HeartRate,Respiratory_Rate,_Dosage)=>{
+  let id=11
+  const contract = await GetEthereumContract();
 
+  await Moralis.start({
+    apiKey: "YL8ZnJJABhPYC20ilgZfGj6JSvvh1A6Op9CYzOcvsvygZCzLFC8CeNlkvJCUbTEy",
+  });
+  let filename=`${id}.json`
+
+const uploadArray=[{
+  path:filename,
+  content:{
+    Data:date,
+    WalletAddress:walletAddress,
+    Physician:physician,
+    Department:departmentuint,
+    BloodPressure:Blood_Pressure,
+    HeartRate:_HeartRate,
+    RespiratoryRate:Respiratory_Rate,
+    Dosage:_Dosage
+  },
+  mime: "application/json",
+
+}]
+
+  console.log(filename);
+  const response = await Moralis.EvmApi.ipfs.uploadFolder({
+    abi: uploadArray,
+  });
+  // id++;
+  let ipfs=response.result[0].path
+  console.log(ipfs);
+  let addIPFS=await contract.StorePatientData(ipfs,address)
+  await addIPFS.wait()
+  
+
+}
 //----------------------------------
 const GetEthereumContract = async () => {
   const connectedAccount = getGlobalState("connectedAccount");

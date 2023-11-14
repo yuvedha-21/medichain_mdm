@@ -5,7 +5,6 @@ import Connectivity from "../connectivity/connectivity";
 
 export default function DoctorComponent() {
 
-
   return (
     <>
       <div className="container-fluid doctorBg">

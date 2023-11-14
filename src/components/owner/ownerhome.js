@@ -13,12 +13,10 @@ import OwnerPrivilages from "./ownerPrivilages";
 
 export default function Ownerhome() {
   const { address, isConnected } = useAccount();
-//   console.log(address);
   const [ownerAddress, setOwnerAddress] = useState("");
-//   console.log(ownerAddress);
   const [isowner, setIsowner] = useState("false");
   const { chain } = useNetwork();
-//   console.log(isowner);
+  // console.log(isowner);
 
   useState(() => {
     if (isConnected) {
@@ -41,7 +39,7 @@ export default function Ownerhome() {
         if (isConnected) {
           await blockchain.isWallectConnected();
           const ownerAddress = await blockchain.getContractOwner();
-            // console.log(ownerAddress)
+
           setOwnerAddress(ownerAddress);
         }
       } catch (error) {
@@ -60,10 +58,10 @@ export default function Ownerhome() {
           setIsowner(false);
         }
       }
-    }, 1000);
+    }, 1000); // 5000 milliseconds = 5 seconds
 
     return () => {
-      clearTimeout(timeoutId); 
+      clearTimeout(timeoutId); // Clear the timeout if the component unmounts before 5 seconds
     };
   }, [isConnected, ownerAddress]);
 
