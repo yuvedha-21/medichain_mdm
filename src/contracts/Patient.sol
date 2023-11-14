@@ -23,6 +23,7 @@ contract PatientDetails is DoctorDetails {
         string Occupation;
         string dateOfBirth;
         uint age;
+        uint phoneNumber;
         }
         struct PatientMedicalDetails{
             string date;
@@ -87,7 +88,8 @@ string memory date,
         string memory _gender,
         string memory _Occupation,
      string memory _dateOfBirth,
-     uint _age
+     uint _age,
+     uint number
        )public _onlyDoctor{
             require(PatientsPersonalDetails[_walletAddress].walletAddress!=_walletAddress,"Patient's personal details already exist!!");
         require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0 ,"Kindly fill all the mandatory feilds!!");
@@ -104,7 +106,8 @@ string memory date,
         _Occupation,
         _dateOfBirth,
        
-        age
+        age,
+        number
         );
         if (PatientsMedicalDetails[_walletAddress].walletAddress==_walletAddress) {
             totalPatient++;
@@ -206,7 +209,8 @@ function EditPatinetMedicalDetails(
         string memory _gender,
         string memory _Occupation,
         string memory _dateOfBirth,
-        uint _age)public _onlyDoctor(){
+        uint _age,
+        uint number)public _onlyDoctor(){
            
         require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0   ,"Kindly fill all the mandatory feilds!!");
 
@@ -224,7 +228,8 @@ function EditPatinetMedicalDetails(
         _gender,
         _Occupation,
         _dateOfBirth,
-        age
+        age,
+        number
         );
     }
 }
