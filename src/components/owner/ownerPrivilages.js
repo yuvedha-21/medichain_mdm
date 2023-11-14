@@ -102,6 +102,7 @@ console.log(isValidDoctor);
   //Function Call On Add owner Address
   const newOwnerAddress = async (data) => {
     try {
+      console.log(data);
       const ownerDetails = await blockchain.AddOwner(data.newOwnerAddress);
     } catch (error) {
       console.error("Error:", error);
