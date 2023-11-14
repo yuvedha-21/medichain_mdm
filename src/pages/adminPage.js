@@ -9,7 +9,7 @@ export default function AdminPage() {
     <>
     <Headerbar/>
     <AdminHome/>
-    <AdminPrivilages/>
+  
     <Footer/>
     
     </>

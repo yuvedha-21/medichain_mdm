@@ -1,6 +1,122 @@
-import React from 'react'
+import React,{useState} from 'react'
+import Accordion from "react-bootstrap/Accordion";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import * as blockchain from "../../services/Blockchain";
+
+//Adding New Doctor Address Validation
+const SignupSchema = yup.object().shape({
+  name: yup.string().required("*Please enter your name."),
+  email: yup
+    .string()
+    .email("*Please enter a valid email address.")
+    .required("*Email is required."),
+  dob: yup.date().required("*Please select a date of birth."),
+  walletAddress: yup.string().required("*walletAddress is required."),
+  mobileNumber: yup.string().matches(/^\d{10}$/),
+  age: yup.number().required().positive().integer(),
+  ProfessionalWalletAddress: yup
+    .string()
+    .required("*walletAddress is required."),
+  medicalCollege: yup.string().required("*medicalCollege is required."),
+  specialization: yup.string().required("*specialization is required."),
+  experience: yup
+    .number()
+    .positive()
+    .integer()
+    .required("*Enter your experience."),
+  MedicalLicenceNumber: yup
+    .string()
+    .matches(/^[A-Z0-9-]+$/, "*Invalid license number format")
+    .required(),
+});
+
+// Checking Doctor Address validation
+
+const doctorAddressSchema = yup.object().shape({
+  doctorAddressToCheck: yup
+    .string()
+    .required("* Doctor Address to check is required."),
+});
+
 
 export default function AdminPrivilages() {
+
+  const [isValidDoctor, setIsValidDoctor] = useState("false");
+
+console.log(isValidDoctor);
+
+  //Add Doctor Details
+  const {
+    register,
+    handleSubmit: handleSubmitDoctorDetails,
+    formState: { errors: doctorDetailsErrors },
+  } = useForm({
+    resolver: yupResolver(SignupSchema),
+  });
+
+  //validate doctor Address
+  const {
+    register: doctorAddress,
+    handleSubmit: handleSubmitDoctorAddress,
+    formState: { errors: doctorAddressErrors },
+  } = useForm({
+    resolver: yupResolver(doctorAddressSchema),
+  });
+
+  //Function Call On Add Doctor Details
+  const onSubmitOfDoctorDetails = async (data) => {
+    const { name, email, dob, walletAddress, mobileNumber, age } = data;
+
+    const {
+      ProfessionalWalletAddress,
+      medicalCollege,
+      specialization,
+      experience,
+      MedicalLicenceNumber,
+    } = data;
+
+    const personalDetails = {
+      name,
+      email,
+      dob,
+      walletAddress,
+      mobileNumber,
+      age,
+    };
+
+    const professionalDetails = {
+      ProfessionalWalletAddress,
+      medicalCollege,
+      specialization,
+      experience,
+      MedicalLicenceNumber,
+    };
+
+    const doctorDetails = await blockchain.addDoctorDetails(
+      personalDetails,
+      professionalDetails
+    );
+  };
+
+  //Function Call to validate doctor Address
+  const doctorAddressToCheck = async (data) => {
+    try {
+      console.log("mugu");
+      const validatedoctor = await blockchain.isDoctor(
+        data.doctorAddressToCheck
+      );
+
+      setIsValidDoctor(validatedoctor)
+      console.log(validatedoctor);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+
+  
   return (
     <>
     <Accordion>

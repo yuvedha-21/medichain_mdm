@@ -9,6 +9,7 @@ import {
   useChainModal,
 } from "@rainbow-me/rainbowkit";
 import corporate from "../assets/doctor/corporate.png";
+import AdminPrivilages from "./adminPrivilages";
 
 export default function AdminHome() {
   const { address, isConnected } = useAccount();
@@ -107,8 +108,7 @@ export default function AdminHome() {
             </div>
           </div>
 
-          {isConnected && isowner ? null : null}
-        </div>
+          {isConnected && isowner ? <AdminPrivilages/> : null}        </div>
       </div>
     </>
   );
