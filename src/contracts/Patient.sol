@@ -44,10 +44,14 @@ contract PatientDetails is DoctorDetails {
         string RespiratoryRate;
         string Dosage;
     }
+    struct HealthData{
+        uint timestamp;
+        string cid;
+    }
     mapping (address => PatientPersonalDetails) public PatientsPersonalDetails;
     mapping(address=> PatientMedicalDetails)public PatientsMedicalDetails;
     mapping (address=>PatientHealthCondition[])public HealthCondition;
-    mapping(address=>string[])public patientsStoredData;
+    mapping(address=>HealthData[])public patientsStoredData;
     uint public totalPatient;
     function AddPatientsMedicalDetails(
         string memory _date,
@@ -145,9 +149,19 @@ string memory date,
         );
     }
 
-    function PatientDataStorage(string memory dataURL,address user) public {
-        patientsStoredData[user].push(dataURL);
+    function StorePatientData(string memory _dataURL,address user) public {
+         HealthData memory newData = HealthData({
+            timestamp: block.timestamp,
+            cid: _dataURL
+        });
+
+        patientsStoredData[user].push(newData);
     }
+
+    function getPatientStored(address _address)view public returns(HealthData[] memory){
+        return patientsStoredData[_address];
+    }
+    
 
     function getPatientHealthDetails(address _walletAddress)public userOrAdmin view  returns(PatientHealthCondition[] memory){
         return HealthCondition[_walletAddress];
@@ -171,9 +185,7 @@ function EditPatinetMedicalDetails(
         bool _isSmokelessTobaccoUser,
         string memory _surgicalHistory_ifAny,
         string memory _physicalActivityLevel,
-        string memory _pastMedicationDetails_IfAny
-       
-)public _onlyDoctor {
+        string memory _pastMedicationDetails_IfAny)public _onlyDoctor {
     require(_walletAddress!=address(0) ,"Kindly fill all the mandatory feilds!!");
 
         require(PatientsPersonalDetails[_walletAddress].walletAddress==_walletAddress,"Incorrect Patient wallet address or The Patient detail for the address provided not available in the chain!!");

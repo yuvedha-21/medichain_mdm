@@ -1,10 +1,13 @@
 import React, { useState } from "react";
+import Moralis from 'moralis';
+
 import Accordion from "react-bootstrap/Accordion";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import * as blockchain from "../../services/Blockchain";
-
+// import * as ipfs from "../../services/IPFS_Uploader"
+// import fs from 'fs';
 const SignupSchema = yup.object().shape({
   name: yup.string().required("*Please enter your name."),
   email: yup
@@ -32,6 +35,7 @@ const SignupSchema = yup.object().shape({
 });
 
 export default function OwnerPrivilages() {
+  const [fileContent, setFileContent] = useState(null);
   const {
     register,
     handleSubmit,
@@ -83,7 +87,9 @@ export default function OwnerPrivilages() {
     const doctorDetails = await blockchain.addDoctorDetails(personalDetails,professionalDetails);
 
   };
-
+const click=async()=>{
+ await blockchain.uploadIPFS_to_contract("tmrw",1234,"yuvi","cardio","Normal","bad","good","ok")
+}
   return (
     <>
       <Accordion>
@@ -327,6 +333,7 @@ export default function OwnerPrivilages() {
         </Accordion.Item>
       
       </Accordion>
+      <button onClick={click}>hello</button>
     </>
   );
 }

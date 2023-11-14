@@ -16,7 +16,7 @@ export default function Ownerhome() {
   const [ownerAddress, setOwnerAddress] = useState("");
   const [isowner, setIsowner] = useState("false");
   const { chain } = useNetwork();
-  console.log(isowner);
+  // console.log(isowner);
 
   useState(() => {
     if (isConnected) {
