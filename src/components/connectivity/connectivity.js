@@ -78,7 +78,7 @@ export default function Connectivity() {
         )}
         {openConnectModal && (
           <button
-            className={` mt-2  p-4 doctorLandingPageButton`}
+            className={` mt-2  ps-5 pe-5 pt-3 pb-3 fw-bold doctorLandingPageButton`}
             onClick={openAccountModal || openConnectModal}
             type="button"
           >

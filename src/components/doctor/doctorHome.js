@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { truncate, useGlobalState } from "../../store";
-import { useAccount, useBalance, useNetwork } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import * as blockchain from "../../services/Blockchain";
 import { getGlobalState, setGlobalState } from "../../store";
 import {
@@ -8,15 +8,18 @@ import {
   useAccountModal,
   useChainModal,
 } from "@rainbow-me/rainbowkit";
-import corporate from "../assets/doctor/corporate.png";
-import OwnerPrivilages from "./ownerPrivilages";
+import "./doctor.css";
+import Connectivity from "../connectivity/connectivity";
+import DoctorPrivilages from "./doctorPrivillages";
 
-export default function Ownerhome() {
+export default function DoctorHome() {
   const { address, isConnected } = useAccount();
+  //   console.log(address);
   const [ownerAddress, setOwnerAddress] = useState("");
+  //   console.log(ownerAddress);
   const [isowner, setIsowner] = useState("false");
   const { chain } = useNetwork();
-  // console.log(isowner);
+  //   console.log(isowner);
 
   useState(() => {
     if (isConnected) {
@@ -39,7 +42,7 @@ export default function Ownerhome() {
         if (isConnected) {
           await blockchain.isWallectConnected();
           const ownerAddress = await blockchain.getContractOwner();
-
+          // console.log(ownerAddress)
           setOwnerAddress(ownerAddress);
         }
       } catch (error) {
@@ -58,55 +61,29 @@ export default function Ownerhome() {
           setIsowner(false);
         }
       }
-    }, 1000); // 5000 milliseconds = 5 seconds
+    }, 1000);
 
     return () => {
-      clearTimeout(timeoutId); // Clear the timeout if the component unmounts before 5 seconds
+      clearTimeout(timeoutId);
     };
   }, [isConnected, ownerAddress]);
 
   return (
     <>
-      <div className="container-fluid ">
+      <div className="container-fluid doctorBg">
         <div className="container">
           <div className="row">
-            <div className="col-lg-7">
-              <img src={corporate} className="doctorLandingPage" />
-            </div>
             <div className="col-lg-5">
-              <h1 className="ownerLandingPageh1 ">
+              <h1 className="doctorLandingPageh1 ">
                 MediChain <br /> Management To <br /> Track Patient History
               </h1>
-              <div className="d-flex">
-                {openAccountModal && (
-                  <button
-                    className=" doctorLandingPageButton mt-2"
-                    onClick={openAccountModal}
-                    type="button"
-                  >
-                    {truncate(address, 4, 4, 10)}
-                  </button>
-                )}
-                {openConnectModal && (
-                  <button
-                    className={` mt-2  p-4 doctorLandingPageButton`}
-                    onClick={openAccountModal || openConnectModal}
-                    type="button"
-                  >
-                    {openAccountModal ? "Wrong network     " : "Connect"}
-                  </button>
-                )}
-
-                {isConnected && chain.unsupported && openChainModal && (
-                  <button onClick={openChainModal} type="button">
-                    Wrong Network
-                  </button>
-                )}
+              <div className="mt-5">
+                <Connectivity />
               </div>
             </div>
+            <div className="col-lg-7">&nbsp;</div>
           </div>
-
-          {isConnected && isowner ? <OwnerPrivilages/> : null}
+          {isConnected && isowner ? <DoctorPrivilages /> : null}
         </div>
       </div>
     </>
