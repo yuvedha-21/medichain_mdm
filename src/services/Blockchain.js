@@ -12,7 +12,7 @@ import { useEffect } from "react";
 let success = "success";
 let info = "info";
 const { ethereum } = window;
-const contractAddress = "0x2794640ccbCd3AFCCaAA29aCB934a29D78c51E51";
+const contractAddress = "0x34b80fc344652A4b1ABA23FEE52AE68802a4457f";
 // 0x4ec8Af3f939325EeB5ca468e6ef85fc077cca978
 const contractAbi = abi.abi;
 // const docABI = docABI.abi;
@@ -197,9 +197,10 @@ const removeDoctorAccess = async (address) => {
 const AddOwner = async (address) => {
   console.log(address);
   const contract = await GetEthereumContract();
+  console.log(contract);
   const connectedAccount = getGlobalState("connectedAccount");
   let addAccess = await contract.addOwner(address);
-  await addAccess.wait();
+  // await addAccess.wait();
 };
 
 const removeOwner = async (address) => {
