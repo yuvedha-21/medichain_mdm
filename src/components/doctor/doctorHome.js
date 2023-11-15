@@ -83,7 +83,13 @@ export default function DoctorHome() {
             </div>
             <div className="col-lg-7">&nbsp;</div>
           </div>
+          <div className="container">
+
+          <div className="row mt-5 pb-5">
           {isConnected && isowner ? <DoctorPrivilages /> : null}
+          </div>
+                      
+          </div>
         </div>
       </div>
     </>

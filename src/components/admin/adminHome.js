@@ -108,7 +108,7 @@ export default function AdminHome() {
             </div>
           </div>
 
-          {isConnected && isowner ? <AdminPrivilages/> : null}        </div>
+          {isConnected && isowner ? <AdminPrivilages/> : null}</div>
       </div>
     </>
   );

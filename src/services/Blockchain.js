@@ -414,4 +414,5 @@ export {
   AddOwner,
   removeOwner,
   getPatientStoredData,
+  addPatientDetails,
 };
