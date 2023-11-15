@@ -59,7 +59,7 @@ export default function OwnerPrivilages() {
 
 const [isValidDoctor, setIsValidDoctor] = useState("false");
 
-console.log(isValidDoctor);
+// console.log(isValidDoctor);
 
   //Add owner Address
   const {

@@ -12,7 +12,7 @@ import { useEffect } from "react";
 let success = "success";
 let info = "info";
 const { ethereum } = window;
-const contractAddress = "0x2794640ccbCd3AFCCaAA29aCB934a29D78c51E51";
+const contractAddress = "0x34b80fc344652A4b1ABA23FEE52AE68802a4457f";
 // 0x4ec8Af3f939325EeB5ca468e6ef85fc077cca978
 const contractAbi = abi.abi;
 // const docABI = docABI.abi;
@@ -111,7 +111,66 @@ const addPatientDetails=async(personalDetails, MedicalDetails)=>{
   const connectedAccount = getGlobalState("connectedAccount");
   console.log(personalDetails);
   console.log(MedicalDetails);
+  let addPatientPersonalDetails = await contract.AddPatientsPersonalDetails(
+    personalDetails.date,
+    personalDetails.name,
+    personalDetails.walletAddress,
+    personalDetails.gender,
+    personalDetails.occupation,
+    personalDetails.dob,
+    personalDetails.age,
+    personalDetails.number,
+    {
+      from: connectedAccount,
+    }
+  );
+  await addPatientPersonalDetails.wait();
+  let addPatientMedicalDetails = await contract.AddPatientsMedicalDetails(
+    MedicalDetails.walletAddress,
+    MedicalDetails.date,
+    MedicalDetails.isAlcoholic,
+    MedicalDetails.isSmoker,
+    MedicalDetails.tobacoUser,
+    MedicalDetails.surgicalHistory,
+    MedicalDetails.physicalActivityLevel,
+    MedicalDetails.pastMedicationDetails,
+    {
+      from: connectedAccount,
+    }
+  );
+  await addPatientMedicalDetails.wait();
 }
+const addPatientHealthData=async(healthData)=>{
+  const contract = await GetEthereumContract();
+  const connectedAccount = getGlobalState("connectedAccount");
+  console.log(healthData);
+  let addPatientMedicalDetails = await contract.addPatientHealthDetails(
+    healthData.date,
+    healthData.walletAddress,
+    healthData.physician,
+    healthData.departmentUnit,
+    healthData.bloodPressure,
+    healthData.heartRate,
+    healthData.respiratoryRate,
+    healthData.Dosage,
+    {
+      from: connectedAccount,
+    }
+  );
+  await addPatientMedicalDetails.wait();
+  uploadIPFS_to_contract( 
+    healthData.date,
+    healthData.walletAddress,
+    healthData.physician,
+    healthData.departmentUnit,
+    healthData.bloodPressure,
+    healthData.heartRate,
+    healthData.respiratoryRate,
+    healthData.Dosage,)
+}
+
+
+
 const addDoctorDetails = async (personalDetails, professionalDetails) => {
   const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
@@ -197,9 +256,10 @@ const removeDoctorAccess = async (address) => {
 const AddOwner = async (address) => {
   console.log(address);
   const contract = await GetEthereumContract();
+  console.log(contract);
   const connectedAccount = getGlobalState("connectedAccount");
   let addAccess = await contract.addOwner(address);
-  await addAccess.wait();
+  // await addAccess.wait();
 };
 
 const removeOwner = async (address) => {
@@ -208,8 +268,9 @@ const removeOwner = async (address) => {
   let removeAccess = await contract.removeOwner(address);
   await removeAccess.wait();
 };
+
 const uploadIPFS_to_contract = async (
-  address,
+  
   date,
   walletAddress,
   physician,
@@ -251,7 +312,7 @@ const uploadIPFS_to_contract = async (
   // id++;
   let ipfs = response.result[0].path;
   console.log(ipfs);
-  let addIPFS = await contract.StorePatientData(ipfs, address);
+  let addIPFS = await contract.StorePatientData(ipfs, walletAddress);
   await addIPFS.wait();
 };
 
