@@ -13,7 +13,7 @@ import { async } from "q";
 let success = "success";
 let info = "info";
 const { ethereum } = window;
-const contractAddress = "0x34b80fc344652A4b1ABA23FEE52AE68802a4457f";
+const contractAddress = "0x397692EB630AF16AF9d7566BAe51914124A189ee";
 // 0x4ec8Af3f939325EeB5ca468e6ef85fc077cca978
 const contractAbi = abi.abi;
 // const docABI = docABI.abi;
@@ -107,7 +107,13 @@ const isOwner = async (address) => {
     reportError(err);
   }
 };
+const isPatient=async(address)=>{
+  const connectedAccount = getGlobalState("connectedAccount");
+  const contract = await GetEthereumContract();
+  let isPatient_=await contract.isPatient(address)
+  return isPatient_
 
+}
 const addPatientDetails=async(personalDetails, MedicalDetails)=>{
   const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
@@ -180,6 +186,7 @@ const addPatientHealthData=async(healthData)=>{
 const addDoctorDetails = async (personalDetails, professionalDetails) => {
   const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
+  personalDetails.dob=personalDetails.dob.toString()
   let arr = [];
   // arr=doctorDetailsArray
   console.log(personalDetails);
@@ -250,7 +257,7 @@ const getDoctorDetails = async (account) => {
   let personalDetails = await contract.DoctorsPersonalInfo(account);
   let professionalDetails = await contract.Doctors_ProfessionalDetails(account);
   console.log(personalDetails.name);
-  return personalDetails, professionalDetails;
+  return [personalDetails, professionalDetails];
 };
 
 const removeDoctorAccess = async (address) => {

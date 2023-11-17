@@ -116,7 +116,7 @@ contract PatientDetails {
         string memory _pastMedicationDetails_IfAny
         )
         public _onlyDoctor {
-            require(PatientsMedicalDetails[_walletAddress].walletAddress!=_walletAddress,"Patient medical details already exist!!");
+            require(PatientsMedicalDetails[_walletAddress].walletAddress!=_walletAddress,"Patient medical details already exist!!. Kindly edit the details if needed");
             require(_walletAddress!=address(0), "Kindly fill all the mandatory feilds!!");
             PatientsMedicalDetails[_walletAddress]=PatientMedicalDetails(
                 _date,
@@ -142,7 +142,7 @@ string memory date,
      uint _age,
      uint number
        )public _onlyDoctor{
-            require(PatientsPersonalDetails[_walletAddress].walletAddress!=_walletAddress,"Patient's personal details already exist!!");
+            require(PatientsPersonalDetails[_walletAddress].walletAddress!=_walletAddress,"Patient's Medical details already exist!!. Kindly edit the details if needed");
         require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0 ,"Kindly fill all the mandatory feilds!!");
     
         // uint age=getAge(_yearOfBirth);
@@ -180,7 +180,7 @@ string memory date,
         // require(PatientsPersonalDetails[_walletAddress].isAlive, "We regret to say that,this Patient is dead and cannot add Health details anymore!!");
         require(PatientsPersonalDetails[_walletAddress].walletAddress==_walletAddress && PatientsMedicalDetails[_walletAddress].walletAddress==_walletAddress,"Incorrect Patient wallet address or The Patient detail specific to personal or past medical history of the address provided not available in the chain!! ");
 
-        require(DoctorsPersonalInfo[_walletAddress].walletAddress==_physician, "Incorrect Physician wallet address or The Physician detail for the address provided not available in the chain!! ");
+        require(DoctorsPersonalInfo[_physician].walletAddress==_physician, "Incorrect Physician wallet address or The Physician detail for the address provided not available in the chain!! ");
 
         HealthCondition[_walletAddress].push(PatientHealthCondition(
             _date,
@@ -429,4 +429,7 @@ function isOwner(address _address)public view returns(bool val){
                 return true;
             }
         }
+function isPatient(address _address) public view returns(bool){
+     return PatientsPersonalDetails[_address].walletAddress==_address || PatientsMedicalDetails[_address].walletAddress==_address;
+}       
 }
