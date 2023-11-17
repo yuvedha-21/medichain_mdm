@@ -89,6 +89,7 @@ const isDoctor = async (address) => {
   }
 };
 
+
 const isOwner = async (address) => {
   try {
     const connectedAccount = getGlobalState("connectedAccount");

@@ -9,7 +9,6 @@ import {
   useChainModal,
 } from "@rainbow-me/rainbowkit";
 import "./doctor.css";
-import Connectivity from "../connectivity/connectivity";
 import DoctorPrivilages from "./doctorPrivillages";
 
 export default function DoctorHome() {
@@ -87,11 +86,11 @@ export default function DoctorHome() {
             <div className="col-lg-7">&nbsp;</div>
           </div>
           
-          <div className="container">
+       
             <div className="row mt-5 pb-5">
               {isConnected && doctorAddress ? <DoctorPrivilages /> : null}
             </div>
-          </div>
+      
         </div>
       </div>
     </>
