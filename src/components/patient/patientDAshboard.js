@@ -6,9 +6,19 @@ import glucose from "../assets/patient/glucose.png";
 
 
 
-export default function PatientDAshboard() {
+export default function PatientDAshboard(props) {
 
-    
+const patientHealth = props.patientDetails.health;
+const patientPersonal = props.patientDetails.personal;
+const patientMedical = props.patientDetails.medical;
+
+console.log(patientPersonal);
+// console.log(patientMedical);
+// console.log(patientHealth);
+
+
+
+
   return (
     <>
       <div className="container-fluid patientDashBg">
@@ -17,8 +27,8 @@ export default function PatientDAshboard() {
           <div className="col-lg-4 text-center mt-5">
             <div className="card">
               <div className="card-body">
-                <h1>Name</h1>
-                <p>Wallet Address</p>
+                <h1>{patientPersonal.name}</h1>
+                <p>{patientPersonal.walletAddress}</p>
                 <p>Age</p>
               </div>
             </div>

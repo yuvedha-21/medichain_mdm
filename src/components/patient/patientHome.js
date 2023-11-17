@@ -10,13 +10,20 @@ import {
 } from "@rainbow-me/rainbowkit";
 import "./patient.css";
 import patient from "../assets/patient/Group-1015.webp";
+import PatientPrivillages from "./patientPrivillages";
+import PatientDAshboard from "./patientDAshboard";
 
 export default function PatientHome() {
-
   const { address, isConnected } = useAccount();
-  // console.log(address);
   const [ispatient, setIspatient] = useState("");
-  // console.log(ispatient);
+  const [patientPersonal, setPatientPersonal] = useState();
+  const [patientMedical, setPatientMedical] = useState();
+  const [patientHealthData, setPatientHealthData] = useState();
+
+  // console.log(patientPersonal);
+  // console.log(patientMedical);
+  // console.log(patientHealthData);
+
   const { chain } = useNetwork();
 
   useState(() => {
@@ -34,52 +41,48 @@ export default function PatientHome() {
   const [connectedAccount] = useGlobalState("connectedAccount");
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const checkConnectionState = getGlobalState("connectedAccount");
-        if (isConnected) {
-          await blockchain.isWallectConnected();
-          const patientState = await blockchain.isPatient(address);
-          // console.log(patientAddress);
-          setIspatient(patientState);
-        }
-      } catch (error) {
-        // Handle errors
-      }
-    }
-    fetchData();
-  }, [isConnected]);
- 
-  useEffect(() => {
     const fetchData = async () => {
-      if (ispatient === true) {
-        try {
-          let personal = await blockchain.getPatientPersonaldata(address);
-          let medical = await blockchain.getPatientMedicaldata(address);
-          console.log(personal);
-          console.log(medical);
-        } catch (error) {
-          console.error("Error fetching data:", error);
+      // const checkConnectionState = getGlobalState("connectedAccount");
+      if (isConnected) {
+        await blockchain.isWallectConnected();
+        const patientState = await blockchain.isPatient(address);
+        setIspatient(patientState);
+
+        
+        if (ispatient === true) {
+          try {
+            let personal = await blockchain.getPatientPersonaldata(address);
+            setPatientPersonal(personal);
+            let medical = await blockchain.getPatientMedicaldata(address);
+            setPatientMedical(medical);
+            let healthDataCid = await blockchain.getPatientStoredData(address);
+            setPatientHealthData(healthDataCid);
+          } catch (error) {
+            console.error("Error fetching data:", error);
+          }
+        } else {
+          console.log("Not a patient");
         }
       } else {
-        console.log("ERROR");
+        setIspatient(false);
       }
     };
   
-    if (ispatient) {
-      fetchData(); // Call the async function only when ispatient is true
-    }
-  }, [ispatient, address]);
+    fetchData();
+  }, [isConnected,address,ispatient]);
+
   
   
+
   return (
     <>
-     <div className="container-fluid patientBackground">
+      <div className="container-fluid patientBackground">
         <div className="container">
           <div className="row">
             <div className="col-lg-5">
               <h3 className="patientcomponentH3">
-              Health is not valued until sickness comes. Take charge of your health by tracking your medical history.
+                Health is not valued until sickness comes. Take charge of your
+                health by tracking your medical history.
               </h3>
               <div className="d-flex mt-5">
                 {openAccountModal && (
@@ -97,7 +100,9 @@ export default function PatientHome() {
                     onClick={openAccountModal || openConnectModal}
                     type="button"
                   >
-                    {openAccountModal ? "Wrong network     " : "Track Your Medical History"}
+                    {openAccountModal
+                      ? "Wrong network     "
+                      : "Track Your Medical History"}
                   </button>
                 )}
 
@@ -109,11 +114,27 @@ export default function PatientHome() {
               </div>
             </div>
             <div className="col-lg-7">
-            <img src={patient} className="patientLandingPage" />
+              <img src={patient} className="patientLandingPage" />
             </div>
+          </div>
+
+          <div className="row">
+            {ispatient ? (
+             
+              patientPersonal && patientMedical && patientHealthData && (
+                <PatientDAshboard
+                  patientDetails={{
+                    personal: patientPersonal,
+                    medical: patientMedical,
+                    health: patientHealthData,
+                  }}
+                />
+              )
+
+            ) : null}
           </div>
         </div>
       </div>
     </>
-  )
+  );
 }
