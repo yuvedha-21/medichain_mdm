@@ -167,7 +167,11 @@ const [isValidDoctor, setIsValidDoctor] = useState("false");
       console.error("Error:", error);
     }
   };
-
+const click=async()=>{
+ let personal= await blockchain.getPatientPersonaldata("0x5365598ba13e9f40AB2181dCB843Fa7875dA08a4")
+ let medical=await blockchain.getPatientMedicaldata("0x5365598ba13e9f40AB2181dCB843Fa7875dA08a4")
+ console.log(personal.date,medical)
+}
   return (
     <>
       <Accordion>
@@ -510,6 +514,7 @@ const [isValidDoctor, setIsValidDoctor] = useState("false");
           <Accordion.Body>hai</Accordion.Body>
         </Accordion.Item>
       </Accordion>
+      <button onClick={click}>click</button>
     </>
   );
 }

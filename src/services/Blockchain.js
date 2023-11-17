@@ -8,6 +8,7 @@ import Moralis from "moralis";
 
 import { useAccount } from "wagmi";
 import { useEffect } from "react";
+import { async } from "q";
 
 let success = "success";
 let info = "info";
@@ -330,6 +331,18 @@ const getPatientStoredData = async (address) => {
   await data.wait();
   console.log(data);
 };
+const getPatientPersonaldata=async(address)=>{
+  const contract = await GetEthereumContract();
+  let personalData=await contract.PatientsPersonalDetails(address)
+  let medicalData=await contract.PatientsMedicalDetails(address)
+  return personalData
+}
+const getPatientMedicaldata=async(address)=>{
+  const contract = await GetEthereumContract();
+  // let personalData=await contract.PatientsPersonalDetails(address)
+  let medicalData=await contract.PatientsMedicalDetails(address)
+  return medicalData
+}
 //----------------------------------
 const GetEthereumContract = async () => {
   const connectedAccount = getGlobalState("connectedAccount");
@@ -420,6 +433,8 @@ export {
   AddOwner,
   removeOwner,
   getPatientStoredData,
-  addPatientDetails,
   addPatientHealthData,
+  addPatientDetails,
+  getPatientPersonaldata,
+  getPatientMedicaldata
 };
