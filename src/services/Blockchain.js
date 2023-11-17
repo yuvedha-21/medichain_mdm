@@ -171,10 +171,11 @@ const addPatientHealthData=async(healthData)=>{
     }
   );
   await addPatientMedicalDetails.wait();
-  uploadIPFS_to_contract( 
+  let data=healthData.w
+  await uploadIPFS_to_contract( 
     healthData.date,
-    healthData.walletAddress,
-    healthData.physician,
+    healthData.patientWalletAddress,
+    healthData.physicianWalletAddress,
     healthData.departmentUnit,
     healthData.bloodPressure,
     healthData.heartRate,
@@ -326,10 +327,17 @@ const uploadIPFS_to_contract = async (
   });
   // id++;
   let ipfs = response.result[0].path;
-  console.log(ipfs);
-  let addIPFS = await contract.StorePatientData(ipfs, walletAddress);
+  console.log(ipfs.toString());
+  console.log(walletAddress);
+  let addIPFS = await contract.StorePatientData(ipfs.toString(), walletAddress);
   await addIPFS.wait();
 };
+
+// const storePatientData=async(address)=>{
+//   const contract = await GetEthereumContract();
+//   let addIPFS = await contract.StorePatientData(ipfs, address);
+//   await addIPFS.wait();
+// }
 
 const getPatientStoredData = async (address) => {
   // let address=0x316adBe2505856d4c4D67573dC6b6648453faEa9
