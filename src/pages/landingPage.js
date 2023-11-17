@@ -3,8 +3,8 @@ import React from 'react'
 import Footer from '../components/Header_footer/footer/footer'
 import HomeComponent from '../components/homepage/homeComponent'
 import DoctorHome from '../components/doctor/doctorHome'
-import Patientcomponent from '../components/patient/patientcomponent'
 import Headerbar from '../components/Header_footer/navbar/headerbar'
+import PatientHome from '../components/patient/patientHome'
 
 export default function LandingPage() {
   return (
@@ -13,7 +13,7 @@ export default function LandingPage() {
    <Headerbar/>
    <HomeComponent/>
    <DoctorHome/>
-   <Patientcomponent/>
+   <PatientHome/>
    <Footer/>
    </>
   )

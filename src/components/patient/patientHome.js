@@ -2,7 +2,7 @@ import React from 'react'
 import "./patient.css";
 import patient from "../assets/patient/Group-1015.webp";
 
-export default function Patientcomponent() {
+export default function PatientHome() {
   return (
     <>
      <div className="container-fluid patientBackground">

@@ -45,7 +45,7 @@ export default function Headerbar() {
                 <div className="glow-on-hover">Doctor</div>
               </NavLink>
 
-              <NavLink href="/contact">
+              <NavLink href="/patient">
                 <div className="glow-on-hover">Patient</div>
               </NavLink>
 

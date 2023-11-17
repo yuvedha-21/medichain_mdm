@@ -106,6 +106,7 @@ const isOwner = async (address) => {
     reportError(err);
   }
 };
+
 const addPatientDetails=async(personalDetails, MedicalDetails)=>{
   const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
@@ -119,21 +120,23 @@ const addPatientDetails=async(personalDetails, MedicalDetails)=>{
     personalDetails.occupation,
     personalDetails.dob,
     personalDetails.age,
-    personalDetails.number,
+    personalDetails.mobileNumber,
     {
       from: connectedAccount,
     }
   );
+
+
   await addPatientPersonalDetails.wait();
   let addPatientMedicalDetails = await contract.AddPatientsMedicalDetails(
-    MedicalDetails.walletAddress,
     MedicalDetails.date,
-    MedicalDetails.isAlcoholic,
-    MedicalDetails.isSmoker,
-    MedicalDetails.tobacoUser,
+    MedicalDetails.PatientMedicalRecordWalletAddress,
+    MedicalDetails.alcoholic,
+    MedicalDetails.smoker,
+    MedicalDetails.tobaco,
     MedicalDetails.surgicalHistory,
-    MedicalDetails.physicalActivityLevel,
-    MedicalDetails.pastMedicationDetails,
+    MedicalDetails.physicalActivity,
+    MedicalDetails.PastMedicalRecord,
     {
       from: connectedAccount,
     }
@@ -144,15 +147,17 @@ const addPatientHealthData=async(healthData)=>{
   const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
   console.log(healthData);
+  console.log(healthData.date);
   let addPatientMedicalDetails = await contract.addPatientHealthDetails(
     healthData.date,
-    healthData.walletAddress,
-    healthData.physician,
-    healthData.departmentUnit,
+    healthData.patientWalletAddress,
+    healthData.physicianWalletAddress,
+    healthData.department,
+
     healthData.bloodPressure,
     healthData.heartRate,
     healthData.respiratoryRate,
-    healthData.Dosage,
+    healthData.dosage,
     {
       from: connectedAccount,
     }
@@ -184,6 +189,7 @@ const addDoctorDetails = async (personalDetails, professionalDetails) => {
     personalDetails.walletAddress,
     personalDetails.dob,
     personalDetails.age,
+    
     personalDetails.mobileNumber,
     personalDetails.email,
     {
@@ -415,4 +421,5 @@ export {
   removeOwner,
   getPatientStoredData,
   addPatientDetails,
+  addPatientHealthData,
 };

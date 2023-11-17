@@ -98,7 +98,7 @@ const [isValidDoctor, setIsValidDoctor] = useState("false");
   });
 
   //Function Call On Add owner Address
-  const newOwnerAddress = async (data) => {
+  const addNewOwnerAddress = async (data) => {
     try {
       console.log(data);
       const ownerDetails = await blockchain.AddOwner(data.newOwnerAddress);
@@ -175,7 +175,7 @@ const [isValidDoctor, setIsValidDoctor] = useState("false");
           <Accordion.Header>Add Owner Address</Accordion.Header>
           <Accordion.Body>
             <div className="container">
-              <form onSubmit={handleSubmitOwnerAddress(newOwnerAddress)}>
+              <form onSubmit={handleSubmitOwnerAddress(addNewOwnerAddress)}>
                 <div className="form-group row mt-2">
                   <div className="col-lg-6 text-center">
                     <label>Wallet Address Of New Owner:</label>

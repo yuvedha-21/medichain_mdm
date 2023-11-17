@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import Accordion from "react-bootstrap/Accordion";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import * as blockchain from "../../services/Blockchain";
+import Connectivity from "../connectivity/connectivity";
 
-//Adding Patient Details Is On  Validation
+//Adding New Doctor Address Validation
 const PatientSchema = yup.object().shape({
   name: yup.string().required("*Please enter your name."),
   gender: yup.string().required("*gender is required."),
@@ -29,42 +30,14 @@ const PatientSchema = yup.object().shape({
   tobaco: yup.boolean().required("*required."),
 });
 
-
-//Adding Patient Health Condition Is On Validation
-const HealthConditionSchema = yup.object().shape({
-  department: yup.string().required("*Department is required."),
-  physicianWalletAddress: yup
-    .string()
-    .required("*Please select a date of birth."),
-  patientWalletAddress: yup.string().required("*walletAddress is required."),
-
-  bloodPressure: yup.string(),
-  heartRate: yup.string(),
-  respiratoryRate: yup.string(),
-  dosage: yup.string(),
-});
-
-export default function DoctorPrivilages() {
-  const [isValidDoctor, setIsValidDoctor] = useState("false");
-
-  console.log(isValidDoctor);
-
-  //Add Patient Details
+export default function Check() {
+  //Add Doctor Details
   const {
     register,
     handleSubmit: handleSubmitPatientDetails,
     formState: { errors: PatientDetailsErrors },
   } = useForm({
     resolver: yupResolver(PatientSchema),
-  });
-
-  //Add Patient Health Condition
-  const {
-    register: registerPatientHealthCondition,
-    handleSubmit: handleSubmitPatientHealthCondition,
-    formState: { errors: healthConditionErrors },
-  } = useForm({
-    resolver: yupResolver(HealthConditionSchema),
   });
 
   //Function Call On Add Doctor Details
@@ -106,7 +79,7 @@ export default function DoctorPrivilages() {
 
     
 
-    const patientMedicalDetails = {
+    const patientProfessionalDetails = {
       PatientMedicalRecordWalletAddress:
       PatientMedicalRecordWalletAddress || "",
       surgicalHistory: surgicalHistory || "",
@@ -119,10 +92,10 @@ export default function DoctorPrivilages() {
     };
 
     console.log(patientPersonalDetails);
-    console.log(patientMedicalDetails);
+    console.log(patientPersonalDetails);
     const patientDetails = await blockchain.addPatientDetails(
       patientPersonalDetails,
-      patientMedicalDetails
+      patientProfessionalDetails
     );
 
     // const parientDetails = await blockchain.addPatientDetails(
@@ -131,38 +104,16 @@ export default function DoctorPrivilages() {
     // );
   };
 
-  //Function Call On Addinf Patient Health Condition
-  const patientHealth = async (data) => {
-    const currentTimestamp = new Date().toLocaleString("en-US", {
-      weekday: "short",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      timeZoneName: "short",
-    });
-  
-    const medicalHistoryOfPatient = {
-      ...data,
-      date: currentTimestamp,
-    };
-
-    const patientHealthData = await blockchain.addPatientHealthData(medicalHistoryOfPatient);
-    // console.log("mugunth");
-    console.log(patientHealthData);
-  }
-
   return (
     <>
+      <Connectivity />
       <Accordion>
-        <Accordion.Item eventKey="0">
-          <Accordion.Header>Add Patient Details</Accordion.Header>
+        <Accordion.Item eventKey="2">
+          <Accordion.Header>Add Doctor Details</Accordion.Header>
           <Accordion.Body>
             <div className="container">
               <form
-               onSubmit={handleSubmitPatientDetails(onSubmitOfPatientDetails)}
+                onSubmit={handleSubmitPatientDetails(onSubmitOfPatientDetails)}
               >
                 <div className="form-group row">
                   <div className="col-lg-6">
@@ -488,167 +439,6 @@ export default function DoctorPrivilages() {
                 </div>
               </form>
             </div>
-          </Accordion.Body>
-        </Accordion.Item>
-
-        <Accordion.Item eventKey="1">
-          <Accordion.Header>Add Health Condition</Accordion.Header>
-          <Accordion.Body>
-            <div className="container">
-              <form
-                onSubmit={handleSubmitPatientHealthCondition(patientHealth)}
-              >
-                <div className="form-group row">
-                  <div className="col-lg-6">
-                   
-                    <div className="row mt-3">
-                      <div className="col-lg-6">
-                        <label>Department:</label>
-                      </div>
-                      <div className="col-lg-6">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...registerPatientHealthCondition("department")}
-                        />
-                        {healthConditionErrors.department && (
-                          <p className="text-danger fw-bold">
-                            {healthConditionErrors.department.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="row mt-3">
-                      <div className="col-lg-6">
-                        <label>Physician Address:</label>
-                      </div>
-                      <div className="col-lg-6">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...registerPatientHealthCondition(
-                            "physicianWalletAddress"
-                          )}
-                        />
-                        {healthConditionErrors.physicianWalletAddress && (
-                          <p className="text-danger fw-bold">
-                            {
-                              healthConditionErrors.physicianWalletAddress
-                                .message
-                            }
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="row mt-3">
-                      <div className="col-lg-6">
-                        <label>Wallet Address:</label>
-                      </div>
-                      <div className="col-lg-6">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...registerPatientHealthCondition(
-                            "patientWalletAddress"
-                          )}
-                        />
-                        {healthConditionErrors.patientWalletAddress && (
-                          <p className="text-danger fw-bold">
-                            {healthConditionErrors.patientWalletAddress.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="col-lg-6">
-                    <div className="row mt-2">
-                      <div className="col-lg-6">
-                        <label>Blood Pressure:</label>
-                      </div>
-                      <div className="col-lg-6">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...registerPatientHealthCondition("bloodPressure")}
-                        />
-                        {healthConditionErrors.bloodPressure && (
-                          <p className="text-danger fw-bold">
-                            {healthConditionErrors.bloodPressure.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="row mt-3">
-                      <div className="col-lg-6">
-                        <label>Heart Rate:</label>
-                      </div>
-                      <div className="col-lg-6">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...registerPatientHealthCondition("heartRate")}
-                        />
-                        {healthConditionErrors.heartRate && (
-                          <p className="text-danger fw-bold">
-                            {healthConditionErrors.heartRate.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="row mt-3">
-                      <div className="col-lg-6">
-                        <label>Respiratory Rate:</label>
-                      </div>
-                      <div className="col-lg-6 ">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...registerPatientHealthCondition("respiratoryRate")}
-                        />
-                        {healthConditionErrors.respiratoryRate && (
-                          <p className="text-danger fw-bold">
-                            {healthConditionErrors.respiratoryRate.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="row mt-3">
-                      <div className="col-lg-6">
-                        <label>Dosage:</label>
-                      </div>
-                      <div className="col-lg-6 ">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...registerPatientHealthCondition("dosage")}
-                        />
-                        {healthConditionErrors.dosage && (
-                          <p className="text-danger fw-bold">
-                            {healthConditionErrors.dosage.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="mt-3 mb-3 text-center">
-                    <button type="submit w-100">Submit</button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </Accordion.Body>
-        </Accordion.Item>
-
-        <Accordion.Item eventKey="2">
-          <Accordion.Header>check data</Accordion.Header>
-          <Accordion.Body>
-            
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>

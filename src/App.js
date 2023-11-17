@@ -5,6 +5,7 @@ import DoctorPage from "./pages/doctorPage";
 // import SuperOwnerComponent from "./components/owner/superOwnerComponent";
 import OwnerPage from "./pages/ownerPage";
 import AdminPage from "./pages/adminPage";
+import PatientPage from "./pages/patientPage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
         <Route path="/doctor" element={<DoctorPage/>}/>
         <Route path="/owner" element={<OwnerPage/>}/>
         <Route path="/admin" element={<AdminPage/>}/>
+        <Route path="/patient" element={<PatientPage/>}/>
       </Routes>
     </BrowserRouter>
  

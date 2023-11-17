@@ -14,12 +14,9 @@ import DoctorPrivilages from "./doctorPrivillages";
 
 export default function DoctorHome() {
   const { address, isConnected } = useAccount();
-  //   console.log(address);
-  const [ownerAddress, setOwnerAddress] = useState("");
-  //   console.log(ownerAddress);
-  const [isowner, setIsowner] = useState("false");
+  const [doctorAddress, setDoctorAddress] = useState("");
+  console.log(doctorAddress);
   const { chain } = useNetwork();
-  //   console.log(isowner);
 
   useState(() => {
     if (isConnected) {
@@ -41,9 +38,8 @@ export default function DoctorHome() {
         const checkConnectionState = getGlobalState("connectedAccount");
         if (isConnected) {
           await blockchain.isWallectConnected();
-          const ownerAddress = await blockchain.getContractOwner();
-          // console.log(ownerAddress)
-          setOwnerAddress(ownerAddress);
+          const doctorAddress = await blockchain.isDoctor();
+          setDoctorAddress(doctorAddress);
         }
       } catch (error) {
         // Handle errors
@@ -51,22 +47,6 @@ export default function DoctorHome() {
     }
     fetchData();
   }, [isConnected]);
-
-  useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      if (isConnected) {
-        if (ownerAddress === address) {
-          setIsowner(true);
-        } else {
-          setIsowner(false);
-        }
-      }
-    }, 1000);
-
-    return () => {
-      clearTimeout(timeoutId);
-    };
-  }, [isConnected, ownerAddress]);
 
   return (
     <>
@@ -77,18 +57,40 @@ export default function DoctorHome() {
               <h1 className="doctorLandingPageh1 ">
                 MediChain <br /> Management To <br /> Track Patient History
               </h1>
-              <div className="mt-5">
-                <Connectivity />
+              <div className="d-flex mt-5">
+                {openAccountModal && (
+                  <button
+                    className=" doctorLandingPageButton mt-2"
+                    onClick={openAccountModal}
+                    type="button"
+                  >
+                    {truncate(address, 4, 4, 10)}
+                  </button>
+                )}
+                {openConnectModal && (
+                  <button
+                    className={` mt-2  ps-5 pe-5 pt-3 pb-3 fw-bold doctorLandingPageButton`}
+                    onClick={openAccountModal || openConnectModal}
+                    type="button"
+                  >
+                    {openAccountModal ? "Wrong network     " : "Connect"}
+                  </button>
+                )}
+
+                {isConnected && chain.unsupported && openChainModal && (
+                  <button onClick={openChainModal} type="button">
+                    Wrong Network
+                  </button>
+                )}
               </div>
             </div>
             <div className="col-lg-7">&nbsp;</div>
           </div>
+          
           <div className="container">
-
-          <div className="row mt-5 pb-5">
-          {isConnected && isowner ? <DoctorPrivilages /> : null}
-          </div>
-                      
+            <div className="row mt-5 pb-5">
+              {isConnected && doctorAddress ? <DoctorPrivilages /> : null}
+            </div>
           </div>
         </div>
       </div>
