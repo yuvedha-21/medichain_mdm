@@ -112,6 +112,7 @@ const isPatient=async(address)=>{
   const connectedAccount = getGlobalState("connectedAccount");
   const contract = await GetEthereumContract();
   let isPatient_=await contract.isPatient(address)
+  // console.log(isPatient_);
   return isPatient_
 
 }
@@ -443,6 +444,7 @@ export {
   determineLoginSource,
   addDoctorDetails,
   isDoctor,
+  isPatient,
   editDoctorDetails,
   getDoctorDetails,
   removeDoctorAccess,
