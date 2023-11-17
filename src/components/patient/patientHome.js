@@ -14,8 +14,9 @@ import patient from "../assets/patient/Group-1015.webp";
 export default function PatientHome() {
 
   const { address, isConnected } = useAccount();
+  // console.log(address);
   const [ispatient, setIspatient] = useState("");
-  console.log(ispatient );
+  // console.log(ispatient);
   const { chain } = useNetwork();
 
   useState(() => {
@@ -24,7 +25,7 @@ export default function PatientHome() {
     }
   }, [isConnected]);
 
-  const { openAccountModal } = useAccountModal();3
+  const { openAccountModal } = useAccountModal();
 
   const { openConnectModal } = useConnectModal();
 
@@ -38,8 +39,9 @@ export default function PatientHome() {
         const checkConnectionState = getGlobalState("connectedAccount");
         if (isConnected) {
           await blockchain.isWallectConnected();
-          const patientAddress = await blockchain.isPatient();
-          setIspatient(patientAddress);
+          const patientState = await blockchain.isPatient(address);
+          // console.log(patientAddress);
+          setIspatient(patientState);
         }
       } catch (error) {
         // Handle errors
@@ -47,7 +49,29 @@ export default function PatientHome() {
     }
     fetchData();
   }, [isConnected]);
-
+ 
+  useEffect(() => {
+    const fetchData = async () => {
+      if (ispatient === true) {
+        try {
+          let personal = await blockchain.getPatientPersonaldata(address);
+          let medical = await blockchain.getPatientMedicaldata(address);
+          console.log(personal);
+          console.log(medical);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      } else {
+        console.log("ERROR");
+      }
+    };
+  
+    if (ispatient) {
+      fetchData(); // Call the async function only when ispatient is true
+    }
+  }, [ispatient, address]);
+  
+  
   return (
     <>
      <div className="container-fluid patientBackground">
