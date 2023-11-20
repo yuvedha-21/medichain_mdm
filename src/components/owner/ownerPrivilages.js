@@ -171,8 +171,8 @@ console.log(personalDetails,
 const click=async()=>{
  let personal= await blockchain.getPatientPersonaldata("0x5365598ba13e9f40AB2181dCB843Fa7875dA08a4")
 let medical=[]
-  medical=await blockchain.getDoctorDetails("0xD8B1EcA2A7801808cD310cc68F9680A4831Eb64E")
- console.log(medical)
+  medical=await blockchain.getPatientMedicaldata("0x5365598ba13e9f40AB2181dCB843Fa7875dA08a4")
+ console.log(personal)
 }
   return (
     <>

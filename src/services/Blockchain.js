@@ -13,7 +13,7 @@ import { async } from "q";
 let success = "success";
 let info = "info";
 const { ethereum } = window;
-const contractAddress = "0x397692EB630AF16AF9d7566BAe51914124A189ee";
+const contractAddress = "0x5ed69B417a11deA1893763A683E82c14463655D5";
 // 0x4ec8Af3f939325EeB5ca468e6ef85fc077cca978
 const contractAbi = abi.abi;
 // const docABI = docABI.abi;
@@ -130,6 +130,9 @@ const addPatientDetails=async(personalDetails, MedicalDetails)=>{
     personalDetails.dob,
     personalDetails.age,
     personalDetails.mobileNumber,
+    personalDetails.bloodGroup,
+    personalDetails.height,
+    personalDetails.weight,
     {
       from: connectedAccount,
     }
@@ -158,15 +161,17 @@ const addPatientHealthData=async(healthData)=>{
   console.log(healthData);
   console.log(healthData.date);
   let addPatientMedicalDetails = await contract.addPatientHealthDetails(
+    healthData.healthIssue,
     healthData.date,
     healthData.patientWalletAddress,
     healthData.physicianWalletAddress,
     healthData.department,
-
     healthData.bloodPressure,
     healthData.heartRate,
-    healthData.respiratoryRate,
-    healthData.dosage,
+    healthData.glucoseLevel,
+    healthData.bodyTemperature,
+    healthData.checkupDescription,
+    healthData.medicinesPrescribed,
     {
       from: connectedAccount,
     }
@@ -174,14 +179,17 @@ const addPatientHealthData=async(healthData)=>{
   await addPatientMedicalDetails.wait();
   let data=healthData.w
   await uploadIPFS_to_contract( 
+    healthData.healthIssue,
     healthData.date,
     healthData.patientWalletAddress,
     healthData.physicianWalletAddress,
-    healthData.departmentUnit,
+    healthData.department,
     healthData.bloodPressure,
     healthData.heartRate,
-    healthData.respiratoryRate,
-    healthData.Dosage,)
+    healthData.glucoseLevel,
+    healthData.bodyTemperature,
+    healthData.checkupDescription,
+    healthData.medicinesPrescribed)
 }
 
 
@@ -287,15 +295,17 @@ const removeOwner = async (address) => {
 };
 
 const uploadIPFS_to_contract = async (
-  
+  healthIssue,
   date,
   walletAddress,
   physician,
   departmentuint,
   Blood_Pressure,
   _HeartRate,
-  Respiratory_Rate,
-  _Dosage
+  glucoseLevel,
+  bodyTemp,
+  checkupDescription,
+  medicinesPrescribed
 ) => {
   let id = 11;
   const contract = await GetEthereumContract();
@@ -309,14 +319,17 @@ const uploadIPFS_to_contract = async (
     {
       path: filename,
       content: {
+        HealthIssue:healthIssue,
         Data: date,
         WalletAddress: walletAddress,
         Physician: physician,
         Department: departmentuint,
         BloodPressure: Blood_Pressure,
         HeartRate: _HeartRate,
-        RespiratoryRate: Respiratory_Rate,
-        Dosage: _Dosage,
+        GlucoseLevel: glucoseLevel,
+        BodyTemperature: bodyTemp,
+        CheckUpDescription:checkupDescription,
+        MedicinesPrescribed:medicinesPrescribed
       },
       mime: "application/json",
     },
@@ -454,5 +467,6 @@ export {
   addPatientHealthData,
   addPatientDetails,
   getPatientPersonaldata,
-  getPatientMedicaldata
+  getPatientMedicaldata,
+  isPatient
 };

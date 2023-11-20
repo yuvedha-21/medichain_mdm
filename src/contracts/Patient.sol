@@ -43,9 +43,12 @@ contract PatientDetails {
         string dateOfBirth;
         uint age;
         uint phoneNumber;
+        string bloodGroup;
+        uint height;
+        uint weight;
         }
         struct PatientMedicalDetails{
-            string date;
+        string date;
         address walletAddress;
         bool isAlcoholic;
         bool isSmoker;
@@ -55,14 +58,17 @@ contract PatientDetails {
         string pastMedicationDetails_IfAny;
         }
         struct PatientHealthCondition{
-            string date;
+        string healthIssue;
+        string date;
         address walletAddress;
         address physician;
         string Department_uint;
         string BloodPressure;
         string HeartRate;
-        string RespiratoryRate;
-        string Dosage;
+        string GlucoseLevel;
+        string bodyTemperature;
+        string checkupDescription;
+        string medicinesPrescribed;
     }
      struct DoctorPersonalInfo{
         string name;
@@ -140,7 +146,10 @@ string memory date,
         string memory _Occupation,
      string memory _dateOfBirth,
      uint _age,
-     uint number
+     uint number,
+     string memory _bloodGrp,
+     uint _height,
+     uint _weight
        )public _onlyDoctor{
             require(PatientsPersonalDetails[_walletAddress].walletAddress!=_walletAddress,"Patient's Medical details already exist!!. Kindly edit the details if needed");
         require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0 ,"Kindly fill all the mandatory feilds!!");
@@ -158,7 +167,10 @@ string memory date,
         _dateOfBirth,
        
         age,
-        number
+        number,
+        _bloodGrp,
+        _height,
+        _weight
         );
         if (PatientsMedicalDetails[_walletAddress].walletAddress==_walletAddress) {
             totalPatient++;
@@ -166,14 +178,17 @@ string memory date,
     }
     
     function addPatientHealthDetails(
+        string memory _healthIssue,
         string memory _date,
         address _walletAddress,
         address _physician,
         string memory _Department_uint,
         string memory _BloodPressure,
         string memory _HeartRate,
-        string memory _RespiratoryRate,
-        string memory _Dosage
+        string memory _glucoseLevel,
+        string memory _bodyTemperature,
+        string memory _checkupDescription,
+        string memory _medicinesPrescribed
 
         ) public _onlyDoctor {
 
@@ -183,14 +198,17 @@ string memory date,
         require(DoctorsPersonalInfo[_physician].walletAddress==_physician, "Incorrect Physician wallet address or The Physician detail for the address provided not available in the chain!! ");
 
         HealthCondition[_walletAddress].push(PatientHealthCondition(
+            _healthIssue,
             _date,
         _walletAddress,
         _physician,
         _Department_uint,
         _BloodPressure,
         _HeartRate,
-        _RespiratoryRate,
-        _Dosage
+        _glucoseLevel,
+        _bodyTemperature,
+        _checkupDescription,
+        _medicinesPrescribed
         ));
         // Doctors_ProfessionalDetails[_physician].treatedPatients.push(_walletAddress);
     }
@@ -261,7 +279,10 @@ function EditPatinetMedicalDetails(
         string memory _Occupation,
         string memory _dateOfBirth,
         uint _age,
-        uint number)public _onlyDoctor(){
+        uint number,
+        string memory _bloodGrp,
+        uint _height,
+        uint _weight)public _onlyDoctor(){
            
         require(_walletAddress!=address(0) && bytes(_gender).length>0 && bytes(_Occupation).length>0   ,"Kindly fill all the mandatory feilds!!");
 
@@ -280,7 +301,10 @@ function EditPatinetMedicalDetails(
         _Occupation,
         _dateOfBirth,
         age,
-        number
+        number,
+        _bloodGrp,
+        _height,
+        _weight
         );
     }
     function addOwner(address _address)public _superAdmin(){
