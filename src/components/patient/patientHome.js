@@ -70,10 +70,6 @@ export default function PatientHome() {
   
     fetchData();
   }, [isConnected,address,ispatient]);
-
-  
-  
-
   return (
     <>
       <div className="container-fluid patientBackground">
