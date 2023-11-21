@@ -469,5 +469,5 @@ export {
   addPatientDetails,
   getPatientPersonaldata,
   getPatientMedicaldata,
-  isPatient
+  // isPatient
 };
