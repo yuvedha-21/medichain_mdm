@@ -169,15 +169,15 @@ const addPatientHealthData=async(healthData)=>{
     healthData.bloodPressure,
     healthData.heartRate,
     healthData.glucoseLevel,
-    healthData.bodyTemperature,
-    healthData.checkupDescription,
-    healthData.medicinesPrescribed,
+    healthData.bodyTemp,
+    healthData.checkupDesc,
+    healthData.medicine,
     {
       from: connectedAccount,
     }
   );
   await addPatientMedicalDetails.wait();
-  let data=healthData.w
+  // let data=healthData.w
   await uploadIPFS_to_contract( 
     healthData.healthIssue,
     healthData.date,
@@ -187,9 +187,9 @@ const addPatientHealthData=async(healthData)=>{
     healthData.bloodPressure,
     healthData.heartRate,
     healthData.glucoseLevel,
-    healthData.bodyTemperature,
-    healthData.checkupDescription,
-    healthData.medicinesPrescribed)
+    healthData.bodyTemp,
+    healthData.checkupDesc,
+    healthData.medicine,)
 }
 
 

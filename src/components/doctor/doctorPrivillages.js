@@ -156,7 +156,7 @@ export default function DoctorPrivilages() {
       ...data,
       date: currentTimestamp,
     };
-
+console.log(medicalHistoryOfPatient);
     const patientHealthData = await blockchain.addPatientHealthData(medicalHistoryOfPatient);
     // console.log("mugunth");
     console.log(patientHealthData);

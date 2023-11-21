@@ -457,3 +457,4 @@ function isPatient(address _address) public view returns(bool){
      return PatientsPersonalDetails[_address].walletAddress==_address || PatientsMedicalDetails[_address].walletAddress==_address;
 }       
 }
+
