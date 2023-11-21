@@ -88,7 +88,7 @@ export default function DoctorHome() {
           
        
             <div className="row mt-5 pb-5">
-              {isConnected && doctorAddress ? <DoctorPrivilages /> : null}
+              {isConnected && !doctorAddress ? <DoctorPrivilages /> : null}
             </div>
       
         </div>
