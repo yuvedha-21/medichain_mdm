@@ -11,6 +11,9 @@ const PatientSchema = yup.object().shape({
   gender: yup.string().required("*gender is required."),
   age: yup.number().required().positive().integer(),
   dob: yup.date().required("*Please select a date of birth."),
+  bloodGroup :yup.string().required("*Blood group is required."),
+  height:  yup.number().required().positive().integer(),
+  weight:  yup.number().required().positive().integer(),
   mobileNumber: yup
     .string()
     .matches(/^\d{10}$/)
@@ -37,11 +40,13 @@ const HealthConditionSchema = yup.object().shape({
     .string()
     .required("*Please select a date of birth."),
   patientWalletAddress: yup.string().required("*walletAddress is required."),
+  healthIssue:  yup.string().required("*Health Issue is required."),
 
   bloodPressure: yup.string(),
   heartRate: yup.string(),
-  respiratoryRate: yup.string(),
-  dosage: yup.string(),
+  glucoseLevel : yup.string(),
+  bodyTemp : yup.string(),
+  checkupDesc : yup.string(),
 });
 
 export default function DoctorPrivilages() {
@@ -69,7 +74,7 @@ export default function DoctorPrivilages() {
 
   //Function Call On Add Doctor Details
   const onSubmitOfPatientDetails = async (data) => {
-    const { name, gender, age, dob, mobileNumber, occupation, walletAddress } =
+    const { name, gender, age, dob, mobileNumber, occupation, walletAddress,bloodGroup,height,weight } =
       data;
 
     const {
@@ -101,6 +106,9 @@ export default function DoctorPrivilages() {
       mobileNumber,
       occupation,
       walletAddress,
+      bloodGroup,
+      height,
+      weight,
       date : currentTimestamp,
     };
 
@@ -189,25 +197,6 @@ export default function DoctorPrivilages() {
 
                     <div className="row mt-3">
                       <div className="col-lg-6">
-                        <label>Gender:</label>
-                      </div>
-                      <div className="col-lg-6">
-                        <select className="form-select" {...register("gender")}>
-                          <option value="">Select Gender</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
-                          <option value="other">Other</option>
-                        </select>
-                        {PatientDetailsErrors.gender && (
-                          <p className="text-danger fw-bold">
-                            {PatientDetailsErrors.gender.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="row mt-3">
-                      <div className="col-lg-6">
                         <label>Age:</label>
                       </div>
                       <div className="col-lg-6">
@@ -226,6 +215,27 @@ export default function DoctorPrivilages() {
 
                     <div className="row mt-3">
                       <div className="col-lg-6">
+                        <label>Gender:</label>
+                      </div>
+                      <div className="col-lg-6">
+                        <select className="form-select" {...register("gender")}>
+                          <option value="">Select Gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                          <option value="other">Other</option>
+                        </select>
+                        {PatientDetailsErrors.gender && (
+                          <p className="text-danger fw-bold">
+                            {PatientDetailsErrors.gender.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
                         <label>DOB:</label>
                       </div>
                       <div className="col-lg-6">
@@ -237,6 +247,64 @@ export default function DoctorPrivilages() {
                         {PatientDetailsErrors.dob && (
                           <p className="text-danger fw-bold">
                             {PatientDetailsErrors.dob.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
+                        <label>Blood:</label>
+                      </div>
+                      <div className="col-lg-6">
+                        <select className="form-select" {...register("bloodGroup")}>
+                          <option value="">Select Blood Group</option>
+                          <option value="male">O positive</option>
+                          <option value="female">O Negative</option>
+                          <option value="other">B Positive</option>
+                          <option value="male">B Negative</option>
+                          <option value="female">AB positive</option>
+                          <option value="other">AB negative</option>
+                        </select>
+                        {PatientDetailsErrors.bloodGroup && (
+                          <p className="text-danger fw-bold">
+                            {PatientDetailsErrors.bloodGroup.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
+                        <label>Height:</label>
+                      </div>
+                      <div className="col-lg-6">
+                        <input
+                          type="number"
+                          className="form-control"
+                          {...register("height")}
+                        />
+                        {PatientDetailsErrors.height && (
+                          <p className="text-danger fw-bold">
+                            {PatientDetailsErrors.height.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
+                        <label>Weight:</label>
+                      </div>
+                      <div className="col-lg-6">
+                        <input
+                          type="number"
+                          className="form-control"
+                          {...register("weight")}
+                        />
+                        {PatientDetailsErrors.weight && (
+                          <p className="text-danger fw-bold">
+                            {PatientDetailsErrors.weight.message}
                           </p>
                         )}
                       </div>
@@ -302,81 +370,7 @@ export default function DoctorPrivilages() {
                       <h5>Patient Medical Details</h5>
                     </div>
 
-                    <div className="row mt-2">
-                      <div className="col-lg-6">
-                        <label>Wallet Address:</label>
-                      </div>
-                      <div className="col-lg-6">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("PatientMedicalRecordWalletAddress")}
-                        />
-                        {PatientDetailsErrors.PatientMedicalRecordWalletAddress && (
-                          <p className="text-danger fw-bold">
-                            {
-                              PatientDetailsErrors
-                                .PatientMedicalRecordWalletAddress.message
-                            }
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="row mt-3">
-                      <div className="col-lg-6">
-                        <label>Surgical History:</label>
-                      </div>
-                      <div className="col-lg-6 ">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("surgicalHistory")}
-                        />
-                        {PatientDetailsErrors.surgicalHistory && (
-                          <p className="text-danger fw-bold">
-                            {PatientDetailsErrors.surgicalHistory.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="row mt-3">
-                      <div className="col-lg-6">
-                        <label>Physical Activity Level:</label>
-                      </div>
-                      <div className="col-lg-6 ">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("physicalActivity")}
-                        />
-                        {PatientDetailsErrors.physicalActivity && (
-                          <p className="text-danger fw-bold">
-                            {PatientDetailsErrors.physicalActivity.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="row mt-3">
-                      <div className="col-lg-6">
-                        <label>Past Medical Details:</label>
-                      </div>
-                      <div className="col-lg-6 ">
-                        <input
-                          type="text"
-                          className="form-control"
-                          {...register("PastMedicalRecord")}
-                        />
-                        {PatientDetailsErrors.PastMedicalRecord && (
-                          <p className="text-danger fw-bold">
-                            {PatientDetailsErrors.PastMedicalRecord.message}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-
+                    
                     <div className="row mt-4">
                       <div className="col-lg-6">
                         <label>Is Alcoholic:</label>
@@ -481,6 +475,82 @@ export default function DoctorPrivilages() {
                         )}
                       </div>
                     </div>
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
+                        <label>Wallet Address:</label>
+                      </div>
+                      <div className="col-lg-6">
+                        <input
+                          type="text"
+                          className="form-control"
+                          {...register("PatientMedicalRecordWalletAddress")}
+                        />
+                        {PatientDetailsErrors.PatientMedicalRecordWalletAddress && (
+                          <p className="text-danger fw-bold">
+                            {
+                              PatientDetailsErrors
+                                .PatientMedicalRecordWalletAddress.message
+                            }
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
+                        <label>Surgical History:</label>
+                      </div>
+                      <div className="col-lg-6 ">
+                        <textarea
+                          type="text"
+                          className="form-control"
+                          {...register("surgicalHistory")}
+                        />
+                        {PatientDetailsErrors.surgicalHistory && (
+                          <p className="text-danger fw-bold">
+                            {PatientDetailsErrors.surgicalHistory.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
+                        <label>Physical Activity Level:</label>
+                      </div>
+                      <div className="col-lg-6 ">
+                        <textarea
+                          type="text"
+                          className="form-control"
+                          {...register("physicalActivity")}
+                        />
+                        {PatientDetailsErrors.physicalActivity && (
+                          <p className="text-danger fw-bold">
+                            {PatientDetailsErrors.physicalActivity.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
+                        <label>Past Medical Details:</label>
+                      </div>
+                      <div className="col-lg-6 ">
+                        <textarea
+                          type="text"
+                          className="form-control"
+                          {...register("PastMedicalRecord")}
+                        />
+                        {PatientDetailsErrors.PastMedicalRecord && (
+                          <p className="text-danger fw-bold">
+                            {PatientDetailsErrors.PastMedicalRecord.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
                   </div>
                   <div className="mt-3 mb-3 text-center">
                     <button type="submit w-100">Submit</button>
@@ -561,10 +631,52 @@ export default function DoctorPrivilages() {
                         )}
                       </div>
                     </div>
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
+                        <label>Health Issue:</label>
+                      </div>
+                      <div className="col-lg-6">
+                        <input
+                          type="text"
+                          className="form-control"
+                          {...registerPatientHealthCondition(
+                            "healthIssue"
+                          )}
+                        />
+                        {healthConditionErrors.healthIssue && (
+                          <p className="text-danger fw-bold">
+                            {healthConditionErrors.healthIssue.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
+                        <label>Checkup Description:</label>
+                      </div>
+                      <div className="col-lg-6">
+                        <textarea
+                          type="text"
+                          className="form-control"
+                          {...registerPatientHealthCondition(
+                            "checkupDesc"
+                          )}
+                        />
+                        {healthConditionErrors.checkupDesc && (
+                          <p className="text-danger fw-bold">
+                            {healthConditionErrors.checkupDesc.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    
                   </div>
 
                   <div className="col-lg-6">
-                    <div className="row mt-2">
+                    <div className="row mt-3">
                       <div className="col-lg-6">
                         <label>Blood Pressure:</label>
                       </div>
@@ -602,17 +714,17 @@ export default function DoctorPrivilages() {
 
                     <div className="row mt-3">
                       <div className="col-lg-6">
-                        <label>Respiratory Rate:</label>
+                        <label>Glucose Level:</label>
                       </div>
                       <div className="col-lg-6 ">
                         <input
                           type="text"
                           className="form-control"
-                          {...registerPatientHealthCondition("respiratoryRate")}
+                          {...registerPatientHealthCondition("glucoseLevel")}
                         />
-                        {healthConditionErrors.respiratoryRate && (
+                        {healthConditionErrors.glucoseLevel && (
                           <p className="text-danger fw-bold">
-                            {healthConditionErrors.respiratoryRate.message}
+                            {healthConditionErrors.glucoseLevel.message}
                           </p>
                         )}
                       </div>
@@ -620,17 +732,35 @@ export default function DoctorPrivilages() {
 
                     <div className="row mt-3">
                       <div className="col-lg-6">
-                        <label>Dosage:</label>
+                        <label>Body Temperature:</label>
                       </div>
                       <div className="col-lg-6 ">
                         <input
                           type="text"
                           className="form-control"
-                          {...registerPatientHealthCondition("dosage")}
+                          {...registerPatientHealthCondition("bodyTemp")}
                         />
-                        {healthConditionErrors.dosage && (
+                        {healthConditionErrors.bodyTemp && (
                           <p className="text-danger fw-bold">
-                            {healthConditionErrors.dosage.message}
+                            {healthConditionErrors.bodyTemp.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="row mt-3">
+                      <div className="col-lg-6">
+                        <label>Medicine Prescribed:</label>
+                      </div>
+                      <div className="col-lg-6 ">
+                        <textarea
+                          type="text"
+                          className="form-control"
+                          {...registerPatientHealthCondition("medicine")}
+                        />
+                        {healthConditionErrors.medicine && (
+                          <p className="text-danger fw-bold">
+                            {healthConditionErrors.medicine.message}
                           </p>
                         )}
                       </div>
