@@ -469,5 +469,4 @@ export {
   addPatientDetails,
   getPatientPersonaldata,
   getPatientMedicaldata,
-  // isPatient
 };
