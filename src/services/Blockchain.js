@@ -9,6 +9,8 @@ import Moralis from "moralis";
 import { useAccount } from "wagmi";
 import { useEffect } from "react";
 import { async } from "q";
+import Swal from "sweetalert2";
+
 
 let success = "success";
 let info = "info";
@@ -76,12 +78,12 @@ const getContractOwner = async () => {
     reportError(err);
   }
 };
-
+//check whether the address is doctor or not
 const isDoctor = async (address) => {
   try {
     const connectedAccount = getGlobalState("connectedAccount");
     const contract = await GetEthereumContract();
-    const doctor = await contract.isDoctor(connectedAccount);
+    const doctor = await contract.isDoctor(address);
     return doctor;
     console.log(doctor);
   } catch (err) {
@@ -90,7 +92,7 @@ const isDoctor = async (address) => {
   }
 };
 
-
+//check whether address is owner or not
 const isOwner = async (address) => {
   try {
     const connectedAccount = getGlobalState("connectedAccount");
@@ -108,6 +110,7 @@ const isOwner = async (address) => {
     reportError(err);
   }
 };
+//check patient
 const isPatient=async(address)=>{
   const connectedAccount = getGlobalState("connectedAccount");
   const contract = await GetEthereumContract();
@@ -116,8 +119,10 @@ const isPatient=async(address)=>{
   return isPatient_
 
 }
+//add patient personal and medical details
 const addPatientDetails=async(personalDetails, MedicalDetails)=>{
-  const contract = await GetEthereumContract();
+  try {
+    const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
   console.log(personalDetails);
   console.log(MedicalDetails);
@@ -138,8 +143,10 @@ const addPatientDetails=async(personalDetails, MedicalDetails)=>{
     }
   );
 
-
   await addPatientPersonalDetails.wait();
+  let addPatientPersonalDetailsHash=await addPatientPersonalDetails.hash;
+  alert_(success, addPatientPersonalDetailsHash);
+
   let addPatientMedicalDetails = await contract.AddPatientsMedicalDetails(
     MedicalDetails.date,
     MedicalDetails.PatientMedicalRecordWalletAddress,
@@ -154,9 +161,30 @@ const addPatientDetails=async(personalDetails, MedicalDetails)=>{
     }
   );
   await addPatientMedicalDetails.wait();
+  let addPatientMedicalDetailsHash=await addPatientMedicalDetails.hash
+  alert_(success, addPatientMedicalDetailsHash);
+
+  } catch (error) {
+    console.log(error);
+    const errorMessage = error.message;
+
+    const errorRe = /execution reverted: (.*?)"/;
+    const errorMatch = errorRe.exec(errorMessage);
+
+    if (errorMatch) {
+      const error = errorMatch[1];
+      let err = error.toString();
+      alert_(info, err);
+    } else {
+      console.error(errorMessage);
+    }
+
+  }
 }
+//add regular health patient data and upload data to IPFS
 const addPatientHealthData=async(healthData)=>{
-  const contract = await GetEthereumContract();
+  try {
+    const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
   console.log(healthData);
   console.log(healthData.date);
@@ -177,6 +205,8 @@ const addPatientHealthData=async(healthData)=>{
     }
   );
   await addPatientMedicalDetails.wait();
+  let addPatientMedicalDetailsHash=await addPatientMedicalDetails.hash
+  alert_(success, addPatientMedicalDetailsHash);
   // let data=healthData.w
   await uploadIPFS_to_contract( 
     healthData.healthIssue,
@@ -190,12 +220,27 @@ const addPatientHealthData=async(healthData)=>{
     healthData.bodyTemp,
     healthData.checkupDesc,
     healthData.medicine,)
+  } catch (error) {
+    console.log(error);
+    const errorMessage = error.message;
+
+    const errorRe = /execution reverted: (.*?)"/;
+    const errorMatch = errorRe.exec(errorMessage);
+
+    if (errorMatch) {
+      const error = errorMatch[1];
+      let err = error.toString();
+      alert_(info, err);
+    } else {
+      console.error(errorMessage);
+    }
+
+  }
 }
 
-
-
 const addDoctorDetails = async (personalDetails, professionalDetails) => {
-  const contract = await GetEthereumContract();
+  try {
+    const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
   personalDetails.dob=personalDetails.dob.toString()
   let arr = [];
@@ -216,6 +261,8 @@ const addDoctorDetails = async (personalDetails, professionalDetails) => {
     }
   );
   await addDoctorPersonalDetails.wait();
+  let addDoctorPersonalDetailsHash=await addDoctorPersonalDetails.hash()
+  alert_(success,addDoctorPersonalDetailsHash)
   let addDoctorProfessionalDetails = await contract.AddDoctorProfessionalInfo(
     professionalDetails.ProfessionalWalletAddress,
     professionalDetails.MedicalLicenceNumber,
@@ -227,9 +274,28 @@ const addDoctorDetails = async (personalDetails, professionalDetails) => {
     }
   );
   await addDoctorProfessionalDetails.wait();
+  let addDoctorProfessionalDetailsHash=await addDoctorProfessionalDetails.hash
+  
+  alert_(success,addDoctorProfessionalDetailsHash)
+  } catch (error) {
+    console.log(error);
+    const errorMessage = error.message;
+
+    const errorRe = /execution reverted: (.*?)"/;
+    const errorMatch = errorRe.exec(errorMessage);
+
+    if (errorMatch) {
+      const error = errorMatch[1];
+      let err = error.toString();
+      alert_(info, err);
+    } else {
+      console.error(errorMessage);
+    }
+  }
 };
 
 const editDoctorDetails = async (personalDetails, professionalDetails) => {
+ try {
   const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
   console.log(personalDetails);
@@ -247,6 +313,8 @@ const editDoctorDetails = async (personalDetails, professionalDetails) => {
     }
   );
   await editDoctorPersonalDetails.wait();
+  let editDoctorPersonalDetailsHash=await editDoctorPersonalDetails.hash
+  alert_(success,editDoctorPersonalDetailsHash)
 
   let editDoctorProfessionalDetails =
     await contract.EditDoctorProfessionalDetails(
@@ -260,6 +328,22 @@ const editDoctorDetails = async (personalDetails, professionalDetails) => {
       }
     );
   await editDoctorProfessionalDetails.wait();
+ } catch (error) {
+  console.log(error);
+  const errorMessage = error.message;
+
+  const errorRe = /execution reverted: (.*?)"/;
+  const errorMatch = errorRe.exec(errorMessage);
+
+  if (errorMatch) {
+    const error = errorMatch[1];
+    let err = error.toString();
+    alert_(info, err);
+  } else {
+    console.error(errorMessage);
+  }
+ }
+ 
 };
 
 const getDoctorDetails = async (account) => {
@@ -272,28 +356,86 @@ const getDoctorDetails = async (account) => {
 };
 
 const removeDoctorAccess = async (address) => {
+ try {
   const contract = await GetEthereumContract();
   const connectedAccount = getGlobalState("connectedAccount");
   let removeAccess = await contract.DeleteDoctorAccess(address);
   await removeAccess.wait();
-};
+  let removeAccessHash=await removeAccess.hash
+  alert_(success,removeAccessHash)
+ } catch (error) {
+  console.log(error);
+  const errorMessage = error.message;
 
+  const errorRe = /execution reverted: (.*?)"/;
+  const errorMatch = errorRe.exec(errorMessage);
+
+  if (errorMatch) {
+    const error = errorMatch[1];
+    let err = error.toString();
+    alert_(info, err);
+  } else {
+    console.error(errorMessage);
+  }
+ }
+  
+ }
+
+//adding admin access
 const AddOwner = async (address) => {
-  console.log(address);
-  const contract = await GetEthereumContract();
-  console.log(contract);
-  const connectedAccount = getGlobalState("connectedAccount");
-  let addAccess = await contract.addOwner(address);
+  try {
+    console.log(address);
+    const contract = await GetEthereumContract();
+    console.log(contract);
+    const connectedAccount = getGlobalState("connectedAccount");
+    let addAccess = await contract.addOwner(address);
+    let addAccessHash=await addAccess.hash
+    alert_(success,addAccessHash)
+  } catch (error) {
+    console.log(error);
+  const errorMessage = error.message;
+
+  const errorRe = /execution reverted: (.*?)"/;
+  const errorMatch = errorRe.exec(errorMessage);
+
+  if (errorMatch) {
+    const error = errorMatch[1];
+    let err = error.toString();
+    alert_(info, err);
+  } else {
+    console.error(errorMessage);
+  }
+  }
+
   // await addAccess.wait();
 };
-
+//removing admin access
 const removeOwner = async (address) => {
-  const contract = await GetEthereumContract();
-  const connectedAccount = getGlobalState("connectedAccount");
-  let removeAccess = await contract.removeOwner(address);
-  await removeAccess.wait();
-};
+  try {
+    const contract = await GetEthereumContract();
+    const connectedAccount = getGlobalState("connectedAccount");
+    let removeAccess = await contract.removeOwner(address);
+    await removeAccess.wait();
+    let removeAccessHash=await removeAccess.hash
+    alert_(success,removeAccessHash)
+  } catch (error) {
+    console.log(error);
+  const errorMessage = error.message;
 
+  const errorRe = /execution reverted: (.*?)"/;
+  const errorMatch = errorRe.exec(errorMessage);
+
+  if (errorMatch) {
+    const error = errorMatch[1];
+    let err = error.toString();
+    alert_(info, err);
+  } else {
+    console.error(errorMessage);
+  }
+  }
+
+};
+//internal function to store raw data to IPFS then returnig CID to contract
 const uploadIPFS_to_contract = async (
   healthIssue,
   date,
@@ -345,6 +487,7 @@ const uploadIPFS_to_contract = async (
   console.log(walletAddress);
   let addIPFS = await contract.StorePatientData(ipfs.toString(), walletAddress);
   await addIPFS.wait();
+  alert_(success,addIPFS)
 };
 
 // const storePatientData=async(address)=>{
@@ -374,7 +517,7 @@ const getPatientMedicaldata=async(address)=>{
   let medicalData=await contract.PatientsMedicalDetails(address)
   return medicalData
 }
-//----------------------------------
+//fetch contract ABI to integrate functionalities
 const GetEthereumContract = async () => {
   const connectedAccount = getGlobalState("connectedAccount");
   // console.log(checkConnectionState);
@@ -396,27 +539,7 @@ const GetEthereumContract = async () => {
   // let contract = new ethers.Contract(contractAddress, contractAbi, signer);
   // return contract;
 };
-const GetDoctorEthereumContract = async () => {
-  const connectedAccount = getGlobalState("connectedAccount");
-  // console.log(checkConnectionState);
-  // const {isConnected} = useAccount();
-  // console.log(connectedAccount);
-  if (connectedAccount) {
-    //check whether device pc or mobile
-    const provider = new ethers.providers.Web3Provider(ethereum); //pc
-    const signer = provider.getSigner();
-    let contract = new ethers.Contract(contractAddress, contractAbi, signer);
-    return contract;
-  } else {
-    // alert("error");
-    console.log("wallet not connected");
-    // return getGlobalState("mugunthan");
-  }
-  // const provider = new ethers.providers.Web3Provider(ethereum);
-  // const signer = provider.getSigner();
-  // let contract = new ethers.Contract(contractAddress, contractAbi, signer);
-  // return contract;
-};
+
 const determineLoginSource = async () => {
   // Check the screen width to differentiate between mobile and desktop
   const isMobile_ =
@@ -441,13 +564,13 @@ const reportError = (error) => {
   // throw new Error("No ethereum object.");
 };
 const alert_ = (indication, hash) => {
-  // Swal.fire({
-  //   position: "center",
-  //   icon: indication,
-  //   title: hash,
-  //   showConfirmButton: true,
-  //   focusCancel: false,
-  // });
+  Swal.fire({
+    position: "center",
+    icon: indication,
+    title: hash,
+    showConfirmButton: true,
+    focusCancel: false,
+  });
 };
 
 export {

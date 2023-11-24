@@ -111,6 +111,7 @@ contract PatientDetails {
         require(age>0, "Enter correct birth year");
         return age;
     }
+//patients medical details provided by patients and will be added by doctor
     function AddPatientsMedicalDetails(
         string memory _date,
         address _walletAddress,
@@ -138,6 +139,7 @@ contract PatientDetails {
                 totalPatient++;
             } 
     }
+//patients personal details provided by patients and will be added by doctor
      function AddPatientsPersonalDetails(
 string memory date,
         string memory _name,
@@ -177,6 +179,7 @@ string memory date,
         } 
     }
     
+//regular health checkups data
     function addPatientHealthDetails(
         string memory _healthIssue,
         string memory _date,
@@ -212,7 +215,7 @@ string memory date,
         ));
         // Doctors_ProfessionalDetails[_physician].treatedPatients.push(_walletAddress);
     }
-
+//retreive patient personal and medical data
       function getPatientDetails(address _walletAddress) public userOrAdmin view returns(PatientPersonalDetails memory,PatientMedicalDetails memory){
         require(_walletAddress!=address(0),"Wallet Address cannot be empty");
         require(PatientsPersonalDetails[_walletAddress].walletAddress==_walletAddress && PatientsMedicalDetails[_walletAddress].walletAddress==_walletAddress,"Incorrect Patient wallet address or The Patient detail for the address provided is not completly available in the chain!!");
@@ -221,6 +224,7 @@ string memory date,
         );
     }
 
+//store the IPFS CID mapped to address with timestamp
     function StorePatientData(string memory _dataURL,address user) public {
          HealthData memory newData = HealthData({
             timestamp: block.timestamp,
@@ -230,6 +234,7 @@ string memory date,
         patientsStoredData[user].push(newData);
     }
 
+//provided the address the list of CID  having the healthcheckup data will be viewed
     function getPatientStored(address _address)view public returns(HealthData[] memory){
         return patientsStoredData[_address];
     }
@@ -238,17 +243,8 @@ string memory date,
     function getPatientHealthDetails(address _walletAddress)public userOrAdmin view  returns(PatientHealthCondition[] memory){
         return HealthCondition[_walletAddress];
     }
-// function EditPatientMedicalDetails(
-//     bool _isAlcoholic,
-//         bool _isSmoker,
-//         bool _isSmokelessTobaccoUser,
-//         string memory _surgicalHistory_ifAny,
-//         string memory _physicalActivityLevel,
-//         string memory _pastMedicationDetails_IfAny
-        
-// )public _onlyAdmin(){
-    
-// }
+
+//edit patientMedical details
 function EditPatinetMedicalDetails(
     string memory _date,
       address _walletAddress,
@@ -272,6 +268,7 @@ function EditPatinetMedicalDetails(
         _pastMedicationDetails_IfAny
         );
 }
+//ediit personal data -patient
     function EditPatientPersonalDetails(string memory _date,
         string memory _name,
         address _walletAddress,
@@ -307,12 +304,15 @@ function EditPatinetMedicalDetails(
         _weight
         );
     }
+//Adding admins - owner access
     function addOwner(address _address)public _superAdmin(){
         owner[_address]=true;
     }
+//remove Admin - owner access
     function removeOwner(address _address)public _superAdmin(){
         owner[_address]=false;
     }
+//adding address to owner access - incases
     function AddDoctorAccess(address _walletAddress)public _onlyOwner(){
         require(owner[msg.sender],"Only owner has privilege to add owner access!!");
         require(!DoctorAccess[_walletAddress], "Address already has admin access");
@@ -321,14 +321,14 @@ function EditPatinetMedicalDetails(
         DoctorAccess[_walletAddress]=true;
         totalAdmin++;
     }
-    
+    //remove them from doctor priviege after the need
     function DeleteDoctorAccess(address _walletAddress)public _onlyOwner() {
         require(owner[msg.sender]=true,"Only owner has privilege to delete owner access!!");
         require(_walletAddress!=address(0), "Invalid Address");
         require(DoctorAccess[_walletAddress], "Provided address must be an AdminAccessAddress to remove AdminAccess!!");
         DoctorAccess[_walletAddress]=false;
     }
-    
+    //add doctor professional information
     function AddDoctorProfessionalInfo( address _walletAddress,string memory _MedicalLicenseNumber,
         string memory _Specialization,
         
@@ -350,6 +350,7 @@ function EditPatinetMedicalDetails(
                 totalDoctors++;
             }
          }
+         //add doctor personal information
     function AddDoctorPersonalInfo( 
         string  memory _name,
         address _walletAddress,
@@ -381,6 +382,7 @@ require(DoctorsPersonalInfo[_walletAddress].walletAddress!=_walletAddress , "Phy
           }
             
     }
+//retrieve personal data
     function getDoctorPersonalDetails(address _walletAddress) public _onlyOwner view returns(DoctorPersonalInfo memory){
        require(_walletAddress!=address(0),"Wallet Address cannot be empty");
         require(DoctorsPersonalInfo[_walletAddress].walletAddress==_walletAddress  ,"Incorrect Doctor wallet address or The Doctor detail for the address provided is not completely available in the chain!!");
@@ -388,6 +390,7 @@ require(DoctorsPersonalInfo[_walletAddress].walletAddress!=_walletAddress , "Phy
        return DoctorsPersonalInfo[_walletAddress];
        
     }
+
 
 function getDoctorProfessionalDetails(address _walletAddress) public _onlyOwner view returns(DoctorProfessionalDetails memory){
        require(_walletAddress!=address(0),"Wallet Address cannot be empty");
