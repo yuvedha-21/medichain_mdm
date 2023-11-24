@@ -293,7 +293,7 @@ const addDoctorDetails = async (personalDetails, professionalDetails) => {
     }
   }
 };
-
+//edit already added doctor details
 const editDoctorDetails = async (personalDetails, professionalDetails) => {
  try {
   const contract = await GetEthereumContract();
@@ -328,6 +328,8 @@ const editDoctorDetails = async (personalDetails, professionalDetails) => {
       }
     );
   await editDoctorProfessionalDetails.wait();
+  let editDoctorProfessionalDetailsHash=await editDoctorProfessionalDetails.hash
+  alert_(success,editDoctorProfessionalDetailsHash)
  } catch (error) {
   console.log(error);
   const errorMessage = error.message;
