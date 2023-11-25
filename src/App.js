@@ -11,14 +11,14 @@ function App() {
   return (
 
     <BrowserRouter>
-    <UploadToIPFS></UploadToIPFS>
-      {/* <Routes>
+    {/* <UploadToIPFS></UploadToIPFS> */}
+      <Routes>
         <Route path="/" element={<LandingPage/>} />
         <Route path="/doctor" element={<DoctorPage/>}/>
         <Route path="/owner" element={<OwnerPage/>}/>
         <Route path="/admin" element={<AdminPage/>}/>
         <Route path="/patient" element={<PatientPage/>}/>
-      </Routes> */}
+      </Routes>
     </BrowserRouter>
  
   );

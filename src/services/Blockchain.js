@@ -10,6 +10,7 @@ import { useAccount } from "wagmi";
 import { useEffect } from "react";
 import { async } from "q";
 import Swal from "sweetalert2";
+// require('dotenv').config();
 let success = "success";
 let info = "info";
 const { ethereum } = window;
@@ -258,8 +259,8 @@ const addDoctorDetails = async (personalDetails, professionalDetails) => {
       from: connectedAccount,
     }
   );
-  await addDoctorPersonalDetails.wait();
-  let addDoctorPersonalDetailsHash=await addDoctorPersonalDetails.hash()
+  let transactionWait=await addDoctorPersonalDetails.wait();
+  let addDoctorPersonalDetailsHash=await addDoctorPersonalDetails.hash
   alert_(success,addDoctorPersonalDetailsHash)
   let addDoctorProfessionalDetails = await contract.AddDoctorProfessionalInfo(
     professionalDetails.ProfessionalWalletAddress,
