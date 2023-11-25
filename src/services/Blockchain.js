@@ -11,7 +11,6 @@ import { useEffect } from "react";
 import { async } from "q";
 import Swal from 'sweetalert2';
 
-
 let success = "success";
 let info = "info";
 const { ethereum } = window;
@@ -498,7 +497,11 @@ const uploadIPFS_to_contract = async (
 //   let addIPFS = await contract.StorePatientData(ipfs, address);
 //   await addIPFS.wait();
 // }
-
+const getPatientHealthData=async(address)=>{
+  const contract = await GetEthereumContract();
+  let data = await contract.getPatientHealthDetails(address);
+  console.log(data);
+}
 const getPatientStoredData = async (address) => {
   // let address=0x316adBe2505856d4c4D67573dC6b6648453faEa9
   console.log(address);
@@ -526,6 +529,10 @@ const GetEthereumContract = async () => {
   // console.log(checkConnectionState);
   // const {isConnected} = useAccount();
   // console.log(connectedAccount);
+  const provider = new ethers.providers.Web3Provider(ethereum); //pc
+  const signer = provider.getSigner();
+  let contract = new ethers.Contract(contractAddress, contractAbi, signer);
+  return contract;
   if (connectedAccount) {
     //check whether device pc or mobile
     const provider = new ethers.providers.Web3Provider(ethereum); //pc
@@ -595,4 +602,5 @@ export {
   addPatientDetails,
   getPatientPersonaldata,
   getPatientMedicaldata,
+  getPatientHealthData
 };
