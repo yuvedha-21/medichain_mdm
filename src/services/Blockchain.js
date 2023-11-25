@@ -9,7 +9,9 @@ import Moralis from "moralis";
 import { useAccount } from "wagmi";
 import { useEffect } from "react";
 import { async } from "q";
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
+
+
 let success = "success";
 let info = "info";
 const { ethereum } = window;

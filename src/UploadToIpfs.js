@@ -72,6 +72,8 @@ const UploadToIPFS = () => {
       <button onClick={handleUploadClick} disabled={selectedFiles.length === 0}>
         Upload Files
       </button>
+
+      
     </div>
   );
 };
