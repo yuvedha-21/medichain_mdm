@@ -354,6 +354,7 @@ const getDoctorDetails = async (account) => {
   let personalDetails = await contract.DoctorsPersonalInfo(account);
   let professionalDetails = await contract.Doctors_ProfessionalDetails(account);
   console.log(personalDetails.name);
+  console.log(professionalDetails.MedicalSchoolAttended);
   return [personalDetails, professionalDetails];
 };
 

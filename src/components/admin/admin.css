@@ -1,0 +1,22 @@
+.adminLandingPageh1{
+    margin-top: 20%;
+    margin-left: 15%;
+    font-weight: 800;
+    /* padding-bottom: 20%; */
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    color: black;
+}
+
+.adminLandingPageButton {
+    margin-left: 15%;
+    margin-top: 5%;
+   
+
+  }
+  
+  .adminBg{
+    background-image: url("../assets/admin/adminbg.jpg");
+    background-size:cover;
+    width: 100%;
+    background-repeat: no-repeat;
+  }

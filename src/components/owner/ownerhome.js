@@ -10,6 +10,7 @@ import {
 } from "@rainbow-me/rainbowkit";
 import corporate from "../assets/doctor/corporate.png";
 import OwnerPrivilages from "./ownerPrivilages";
+import "./owner.css";
 
 export default function Ownerhome() {
   const { address, isConnected } = useAccount();
@@ -68,10 +69,10 @@ export default function Ownerhome() {
   return (
     <>
       <div className="container-fluid ">
-        <div className="container">
-          <div className="row">
+        <div className="container pt-5 pb-5">
+          <div className="row pt-5 pb-5">
             <div className="col-lg-7">
-              <img src={corporate} className="doctorLandingPage" />
+              <img src={corporate} className="ownerLandingPageimg" />
             </div>
             <div className="col-lg-5">
               <h1 className="ownerLandingPageh1 ">
@@ -89,7 +90,7 @@ export default function Ownerhome() {
                 )}
                 {openConnectModal && (
                   <button
-                    className={` mt-2  p-4 doctorLandingPageButton`}
+                    className={` mt-2  ps-4 pe-4 pt-2 pb-2 ownerLandingPageButton`}
                     onClick={openAccountModal || openConnectModal}
                     type="button"
                   >
