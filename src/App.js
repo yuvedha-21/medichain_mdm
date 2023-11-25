@@ -6,21 +6,17 @@ import DoctorPage from "./pages/doctorPage";
 import OwnerPage from "./pages/ownerPage";
 import AdminPage from "./pages/adminPage";
 import PatientPage from "./pages/patientPage";
-import UploadToIPFS from "./UploadToIpfs";
 function App() {
   return (
-
     <BrowserRouter>
-    {/* <UploadToIPFS/> */}
       <Routes>
-        <Route path="/" element={<LandingPage/>} />
-        <Route path="/doctor" element={<DoctorPage/>}/>
-        <Route path="/owner" element={<OwnerPage/>}/>
-        <Route path="/admin" element={<AdminPage/>}/>
-        <Route path="/patient" element={<PatientPage/>}/>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/doctor" element={<DoctorPage />} />
+        <Route path="/owner" element={<OwnerPage />} />
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/patient" element={<PatientPage />} />
       </Routes>
     </BrowserRouter>
- 
   );
 }
 
