@@ -260,8 +260,8 @@ const addDoctorDetails = async (personalDetails, professionalDetails) => {
       from: connectedAccount,
     }
   );
-  await addDoctorPersonalDetails.wait();
-  let addDoctorPersonalDetailsHash=await addDoctorPersonalDetails.hash()
+  let transactionWait=await addDoctorPersonalDetails.wait();
+  let addDoctorPersonalDetailsHash=await addDoctorPersonalDetails.hash
   alert_(success,addDoctorPersonalDetailsHash)
   let addDoctorProfessionalDetails = await contract.AddDoctorProfessionalInfo(
     professionalDetails.ProfessionalWalletAddress,
