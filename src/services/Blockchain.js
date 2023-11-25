@@ -10,8 +10,6 @@ import { useAccount } from "wagmi";
 import { useEffect } from "react";
 import { async } from "q";
 import Swal from "sweetalert2";
-
-
 let success = "success";
 let info = "info";
 const { ethereum } = window;
@@ -208,18 +206,18 @@ const addPatientHealthData=async(healthData)=>{
   let addPatientMedicalDetailsHash=await addPatientMedicalDetails.hash
   alert_(success, addPatientMedicalDetailsHash);
   // let data=healthData.w
-  await uploadIPFS_to_contract( 
-    healthData.healthIssue,
-    healthData.date,
-    healthData.patientWalletAddress,
-    healthData.physicianWalletAddress,
-    healthData.department,
-    healthData.bloodPressure,
-    healthData.heartRate,
-    healthData.glucoseLevel,
-    healthData.bodyTemp,
-    healthData.checkupDesc,
-    healthData.medicine,)
+  // await uploadIPFS_to_contract( 
+  //   healthData.healthIssue,
+  //   healthData.date,
+  //   healthData.patientWalletAddress,
+  //   healthData.physicianWalletAddress,
+  //   healthData.department,
+  //   healthData.bloodPressure,
+  //   healthData.heartRate,
+  //   healthData.glucoseLevel,
+  //   healthData.bodyTemp,
+  //   healthData.checkupDesc,
+  //   healthData.medicine,)
   } catch (error) {
     console.log(error);
     const errorMessage = error.message;

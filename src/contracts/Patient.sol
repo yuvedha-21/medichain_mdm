@@ -105,8 +105,7 @@ contract PatientDetails {
     }
 
     function getAge(uint _yearOfBirth)public view returns(uint){
-       
-         uint yearDifference=getYear(block.timestamp);
+        uint yearDifference=getYear(block.timestamp);
         uint age=(1970+yearDifference)-_yearOfBirth;
         require(age>0, "Enter correct birth year");
         return age;
