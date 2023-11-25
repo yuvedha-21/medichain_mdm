@@ -39,7 +39,7 @@ function UploadToIpfs() {
 
   return (
     <div>
-      <h1>Upload Files to IPFS</h1>
+      <h4 className='text-center'>Upload Files to IPFS</h4>
 
       {/* <input type="file" onChange={handleFileChange} multiple />
       <button onClick={uploadFiles}>Upload</button> */}

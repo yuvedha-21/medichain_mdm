@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import * as blockchain from "../../services/Blockchain";
+import UploadToIPFS from "./UploadToIpfs";
 
 //Adding Patient Details Is On  Validation
 const PatientSchema = yup.object().shape({
@@ -11,9 +12,9 @@ const PatientSchema = yup.object().shape({
   gender: yup.string().required("*gender is required."),
   age: yup.number().required().positive().integer(),
   dob: yup.date().required("*Please select a date of birth."),
-  bloodGroup :yup.string().required("*Blood group is required."),
-  height:  yup.number().required().positive().integer(),
-  weight:  yup.number().required().positive().integer(),
+  bloodGroup: yup.string().required("*Blood group is required."),
+  height: yup.number().required().positive().integer(),
+  weight: yup.number().required().positive().integer(),
   mobileNumber: yup
     .string()
     .matches(/^\d{10}$/)
@@ -32,7 +33,6 @@ const PatientSchema = yup.object().shape({
   tobaco: yup.boolean().required("*required."),
 });
 
-
 //Adding Patient Health Condition Is On Validation
 const HealthConditionSchema = yup.object().shape({
   department: yup.string().required("*Department is required."),
@@ -40,13 +40,13 @@ const HealthConditionSchema = yup.object().shape({
     .string()
     .required("*Please select a date of birth."),
   patientWalletAddress: yup.string().required("*walletAddress is required."),
-  healthIssue:  yup.string().required("*Health Issue is required."),
+  healthIssue: yup.string().required("*Health Issue is required."),
 
   bloodPressure: yup.string(),
   heartRate: yup.string(),
-  glucoseLevel : yup.string(),
-  bodyTemp : yup.string(),
-  checkupDesc : yup.string(),
+  glucoseLevel: yup.string(),
+  bodyTemp: yup.string(),
+  checkupDesc: yup.string(),
 });
 
 export default function DoctorPrivilages() {
@@ -74,8 +74,18 @@ export default function DoctorPrivilages() {
 
   //Function Call On Add Doctor Details
   const onSubmitOfPatientDetails = async (data) => {
-    const { name, gender, age, dob, mobileNumber, occupation, walletAddress,bloodGroup,height,weight } =
-      data;
+    const {
+      name,
+      gender,
+      age,
+      dob,
+      mobileNumber,
+      occupation,
+      walletAddress,
+      bloodGroup,
+      height,
+      weight,
+    } = data;
 
     const {
       PatientMedicalRecordWalletAddress,
@@ -88,15 +98,15 @@ export default function DoctorPrivilages() {
     } = data;
 
     const currentTimestamp = new Date().toLocaleString("en-US", {
-        weekday: "short",
-        year: "numeric",
-        month: "short",
-        day: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit",
-        timeZoneName: "short",
-      });
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      timeZoneName: "short",
+    });
 
     const patientPersonalDetails = {
       name,
@@ -109,21 +119,19 @@ export default function DoctorPrivilages() {
       bloodGroup,
       height,
       weight,
-      date : currentTimestamp,
+      date: currentTimestamp,
     };
-
-    
 
     const patientMedicalDetails = {
       PatientMedicalRecordWalletAddress:
-      PatientMedicalRecordWalletAddress || "",
+        PatientMedicalRecordWalletAddress || "",
       surgicalHistory: surgicalHistory || "",
       physicalActivity: physicalActivity || "",
       PastMedicalRecord: PastMedicalRecord || "",
       alcoholic: Boolean(alcoholic),
       smoker: Boolean(smoker),
       tobaco: Boolean(tobaco),
-      date : currentTimestamp,
+      date: currentTimestamp,
     };
 
     console.log(patientPersonalDetails);
@@ -151,16 +159,18 @@ export default function DoctorPrivilages() {
       second: "2-digit",
       timeZoneName: "short",
     });
-  
+
     const medicalHistoryOfPatient = {
       ...data,
       date: currentTimestamp,
     };
-console.log(medicalHistoryOfPatient);
-    const patientHealthData = await blockchain.addPatientHealthData(medicalHistoryOfPatient);
+    console.log(medicalHistoryOfPatient);
+    const patientHealthData = await blockchain.addPatientHealthData(
+      medicalHistoryOfPatient
+    );
     // console.log("mugunth");
     console.log(patientHealthData);
-  }
+  };
 
   return (
     <>
@@ -170,7 +180,7 @@ console.log(medicalHistoryOfPatient);
           <Accordion.Body>
             <div className="container">
               <form
-               onSubmit={handleSubmitPatientDetails(onSubmitOfPatientDetails)}
+                onSubmit={handleSubmitPatientDetails(onSubmitOfPatientDetails)}
               >
                 <div className="form-group row">
                   <div className="col-lg-6">
@@ -232,8 +242,6 @@ console.log(medicalHistoryOfPatient);
                       </div>
                     </div>
 
-                    
-
                     <div className="row mt-3">
                       <div className="col-lg-6">
                         <label>DOB:</label>
@@ -257,7 +265,10 @@ console.log(medicalHistoryOfPatient);
                         <label>Blood:</label>
                       </div>
                       <div className="col-lg-6">
-                        <select className="form-select" {...register("bloodGroup")}>
+                        <select
+                          className="form-select"
+                          {...register("bloodGroup")}
+                        >
                           <option value="">Select Blood Group</option>
                           <option value="male">O positive</option>
                           <option value="female">O Negative</option>
@@ -370,7 +381,6 @@ console.log(medicalHistoryOfPatient);
                       <h5>Patient Medical Details</h5>
                     </div>
 
-                    
                     <div className="row mt-4">
                       <div className="col-lg-6">
                         <label>Is Alcoholic:</label>
@@ -550,7 +560,6 @@ console.log(medicalHistoryOfPatient);
                         )}
                       </div>
                     </div>
-
                   </div>
                   <div className="mt-3 mb-3 text-center">
                     <button type="submit w-100">Submit</button>
@@ -570,7 +579,6 @@ console.log(medicalHistoryOfPatient);
               >
                 <div className="form-group row">
                   <div className="col-lg-6">
-                   
                     <div className="row mt-3">
                       <div className="col-lg-6">
                         <label>Department:</label>
@@ -640,9 +648,7 @@ console.log(medicalHistoryOfPatient);
                         <input
                           type="text"
                           className="form-control"
-                          {...registerPatientHealthCondition(
-                            "healthIssue"
-                          )}
+                          {...registerPatientHealthCondition("healthIssue")}
                         />
                         {healthConditionErrors.healthIssue && (
                           <p className="text-danger fw-bold">
@@ -660,9 +666,7 @@ console.log(medicalHistoryOfPatient);
                         <textarea
                           type="text"
                           className="form-control"
-                          {...registerPatientHealthCondition(
-                            "checkupDesc"
-                          )}
+                          {...registerPatientHealthCondition("checkupDesc")}
                         />
                         {healthConditionErrors.checkupDesc && (
                           <p className="text-danger fw-bold">
@@ -671,8 +675,6 @@ console.log(medicalHistoryOfPatient);
                         )}
                       </div>
                     </div>
-
-                    
                   </div>
 
                   <div className="col-lg-6">
@@ -776,9 +778,9 @@ console.log(medicalHistoryOfPatient);
         </Accordion.Item>
 
         <Accordion.Item eventKey="2">
-          <Accordion.Header>check data</Accordion.Header>
+          <Accordion.Header>Medical Data</Accordion.Header>
           <Accordion.Body>
-            
+            <UploadToIPFS />
           </Accordion.Body>
         </Accordion.Item>
       </Accordion>

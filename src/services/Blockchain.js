@@ -81,11 +81,13 @@ const getContractOwner = async () => {
 //check whether the address is doctor or not
 const isDoctor = async (address) => {
   try {
+    
     const connectedAccount = getGlobalState("connectedAccount");
     const contract = await GetEthereumContract();
     const doctor = await contract.isDoctor(address);
-    return doctor;
     console.log(doctor);
+
+    return doctor;
   } catch (err) {
     console.log(err);
     reportError(err);

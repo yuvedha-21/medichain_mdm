@@ -37,7 +37,8 @@ export default function DoctorHome() {
         const checkConnectionState = getGlobalState("connectedAccount");
         if (isConnected) {
           await blockchain.isWallectConnected();
-          const doctorAddress = await blockchain.isDoctor();
+          const doctorAddress = await blockchain.isDoctor(address );
+          console.log(doctorAddress);
           setDoctorAddress(doctorAddress);
         }
       } catch (error) {
