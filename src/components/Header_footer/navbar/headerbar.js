@@ -29,9 +29,9 @@ export default function Headerbar() {
                 <div className="glow-on-hover">Home</div>
               </NavLink>
 
-              <NavLink href="/about">
+              {/* <NavLink href="/about">
                 <div className="glow-on-hover">About Us</div>
-              </NavLink>
+              </NavLink> */}
 
               <NavLink href="/owner">
                 <div className="glow-on-hover">Owner</div>

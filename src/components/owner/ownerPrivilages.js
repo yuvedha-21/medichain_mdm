@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import Accordion from "react-bootstrap/Accordion";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -45,21 +45,28 @@ const SignupSchema = yup.object().shape({
 });
 
 // Checking Doctor Address validation
-
 const doctorAddressSchema = yup.object().shape({
   doctorAddressToCheck: yup
     .string()
     .required("* Doctor Address to check is required."),
 });
 
-
-
+//Removing New owner Address Validation
+const RemoveDoctorSchema = yup.object().shape({
+  doctorAddressToRemove: yup
+    .string()
+    .required("Doctor Address to Remove is required."),
+});
 
 export default function OwnerPrivilages() {
+  const [isValidDoctor, setIsValidDoctor] = useState("false");
+  const [doctorData, setDoctorData] = useState('');
+  // console.log(doctorData[0].email);
+  
+  // let mugunth = doctorData[0].email;
+  // console.log(mugunth);
 
-const [isValidDoctor, setIsValidDoctor] = useState("false");
-
-// console.log(isValidDoctor);
+  // console.log(isValidDoctor);
 
   //Add owner Address
   const {
@@ -96,6 +103,16 @@ const [isValidDoctor, setIsValidDoctor] = useState("false");
   } = useForm({
     resolver: yupResolver(doctorAddressSchema),
   });
+
+  //Remove Doctor Address
+  const {
+    register: registerRemoveDoctor,
+    handleSubmit: handleSubmitRemoveDoctorAddress,
+    formState: { errors: removeDoctorErrors },
+  } = useForm({
+    resolver: yupResolver(RemoveDoctorSchema),
+  });
+
 
   //Function Call On Add owner Address
   const addNewOwnerAddress = async (data) => {
@@ -146,8 +163,7 @@ const [isValidDoctor, setIsValidDoctor] = useState("false");
       experience,
       MedicalLicenceNumber,
     };
-console.log(personalDetails,
-  professionalDetails);
+    console.log(personalDetails, professionalDetails);
     const doctorDetails = await blockchain.addDoctorDetails(
       personalDetails,
       professionalDetails
@@ -161,22 +177,39 @@ console.log(personalDetails,
       const validatedoctor = await blockchain.isDoctor(
         data.doctorAddressToCheck
       );
+      setIsValidDoctor(validatedoctor);
 
-      setIsValidDoctor(validatedoctor)
+      const evaluateDoctorDetails = await blockchain.getDoctorDetails(
+        data.doctorAddressToCheck
+      );
+      
+      setDoctorData(evaluateDoctorDetails);
+      // console.log(evaluateDoctorDetails.walletAddress);
+
       console.log(validatedoctor);
     } catch (error) {
       console.error("Error:", error);
     }
   };
-const click=async()=>{
- let personal= await blockchain.getPatientPersonaldata("0x5365598ba13e9f40AB2181dCB843Fa7875dA08a4")
-let medical=[]
-  medical=await blockchain.getPatientMedicaldata("0x5365598ba13e9f40AB2181dCB843Fa7875dA08a4")
- console.log(personal)
-}
+
+  useEffect(() => {
+   
+  }, [doctorData]);
+
+  //Function Call On Remove Doctor Address
+  const removeDoctorAddress = async (data) => {
+    try {
+      const removedDoctor = await blockchain.removeDoctorAccess(
+        data.doctorAddressToRemove
+      );
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <>
-      <Accordion>
+      <Accordion className="pb-5">
         <Accordion.Item eventKey="0">
           <Accordion.Header>Add Owner Address</Accordion.Header>
           <Accordion.Body>
@@ -476,22 +509,294 @@ let medical=[]
         <Accordion.Item eventKey="3">
           <Accordion.Header>Edit Doctor Details</Accordion.Header>
           <Accordion.Body>
-            {isValidDoctor ? (
+            {isValidDoctor  ? (
               <div className="container">
-              <form onSubmit={handleSubmitDoctorAddress(doctorAddressToCheck)}>
+                <form
+                  onSubmit={handleSubmitDoctorAddress(doctorAddressToCheck)}
+                >
+                  <div className="form-group row mt-2">
+                    <div className="col-lg-6 text-center">
+                      <label>Enter The Doctor Wallet Address:</label>
+                    </div>
+                    <div className="col-lg-6">
+                      <input
+                        type="text"
+                        className="form-control"
+                        {...doctorAddress("doctorAddressToCheck")}
+                      />
+                      {doctorAddressErrors.doctorAddressToCheck && (
+                        <p className="text-danger fw-bold">
+                          {doctorAddressErrors.doctorAddressToCheck.message}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-3 mb-3 text-center">
+                    <button type="submit" className="w-50">
+                      check Doctor
+                    </button>
+                  </div>
+                </form>
+              </div>
+            ) : (
+              <div className="container">
+                <form
+                  onSubmit={handleSubmitDoctorDetails(onSubmitOfDoctorDetails)}
+                >
+                  <div className="form-group row">
+                    <div className="col-lg-6">
+                      <div className="row mt-2 text-center mb-2 fw-bold">
+                        <h5>Personel Details</h5>
+                      </div>
+                      <div className="row mt-2">
+                        <div className="col-lg-6">
+                          <label>Name:</label>
+                        </div>
+                        <div className="col-lg-6">
+                          <input
+                            type="text"
+                            className="form-control"
+                            {...register("name")}
+                            // value={mugunth}
+                          />
+                          {doctorDetailsErrors.name && (
+                            <p className="text-danger fw-bold">
+                              {doctorDetailsErrors.name.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="row mt-3">
+                        <div className="col-lg-6">
+                          <label>Email:</label>
+                        </div>
+                        <div className="col-lg-6">
+                          <input
+                            type="email"
+                            className="form-control"
+                            {...register("email")}
+                            value={doctorData?.email || ""}
+                          />
+                          {doctorDetailsErrors.email && (
+                            <p className="text-danger fw-bold">
+                              {doctorDetailsErrors.email.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="row mt-3">
+                        <div className="col-lg-6">
+                          <label>Mobile Number:</label>
+                        </div>
+                        <div className="col-lg-6">
+                          <input
+                            type="number"
+                            className="form-control"
+                            {...register("mobileNumber")}
+                            value={doctorData?.mobileNumber || ""}
+                          />
+                          {doctorDetailsErrors.mobileNumber && (
+                            <p className="text-danger fw-bold">
+                              {doctorDetailsErrors.mobileNumber.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="row mt-3">
+                        <div className="col-lg-6">
+                          <label>Age:</label>
+                        </div>
+                        <div className="col-lg-6">
+                          <input
+                            type="number"
+                            className="form-control"
+                            {...register("age")}
+                            value={doctorData?.age || ""}
+                          />
+                          {doctorDetailsErrors.age && (
+                            <p className="text-danger fw-bold">
+                              {doctorDetailsErrors.age.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="row mt-3">
+                        <div className="col-lg-6">
+                          <label>DOB:</label>
+                        </div>
+                        <div className="col-lg-6">
+                          <input
+                            type="date"
+                            className="form-control"
+                            {...register("dob")}
+                            value={doctorData?.dob || ""}
+                          />
+                          {doctorDetailsErrors.dob && (
+                            <p className="text-danger fw-bold">
+                              {doctorDetailsErrors.dob.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="row mt-3">
+                        <div className="col-lg-6">
+                          <label>Wallet Address:</label>
+                        </div>
+                        <div className="col-lg-6">
+                          <input
+                            type="text"
+                            className="form-control"
+                            {...register("walletAddress")}
+                            value={doctorData?.walletAddress || ""}
+                          />
+                          {doctorDetailsErrors.walletAddress && (
+                            <p className="text-danger fw-bold">
+                              {doctorDetailsErrors.walletAddress.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-lg-6">
+                      <div className="row mt-2 text-center mb-2 fw-bold">
+                        <h5>Professional Details</h5>
+                      </div>
+
+                      <div className="row mt-2">
+                        <div className="col-lg-6">
+                          <label>Wallet Address:</label>
+                        </div>
+                        <div className="col-lg-6">
+                          <input
+                            type="text"
+                            className="form-control"
+                            {...register("ProfessionalWalletAddress")}
+                            value={doctorData?.ProfessionalWalletAddress || ""}
+                          />
+                          {doctorDetailsErrors.ProfessionalWalletAddress && (
+                            <p className="text-danger fw-bold">
+                              {
+                                doctorDetailsErrors.ProfessionalWalletAddress
+                                  .message
+                              }
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="row mt-3">
+                        <div className="col-lg-6">
+                          <label>Medical School Attend:</label>
+                        </div>
+                        <div className="col-lg-6">
+                          <input
+                            type="text"
+                            className="form-control"
+                            {...register("medicalCollege")}
+                            value={doctorData?.medicalCollege || ""}
+                          />
+                          {doctorDetailsErrors.medicalCollege && (
+                            <p className="text-danger fw-bold">
+                              {doctorDetailsErrors.medicalCollege.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="row mt-3">
+                        <div className="col-lg-6">
+                          <label>Medical Licence Number:</label>
+                        </div>
+                        <div className="col-lg-6">
+                          <input
+                            type="number"
+                            className="form-control"
+                            {...register("MedicalLicenceNumber")}
+                            value={doctorData?.MedicalLicenceNumber || ""}
+                          />
+                          {doctorDetailsErrors.MedicalLicenceNumber && (
+                            <p className="text-danger fw-bold">
+                              {doctorDetailsErrors.MedicalLicenceNumber.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="row mt-3">
+                        <div className="col-lg-6">
+                          <label>Specialization:</label>
+                        </div>
+                        <div className="col-lg-6 ">
+                          <input
+                            type="text"
+                            className="form-control"
+                            {...register("specialization")}
+                            value={doctorData?.specialization || ""}
+                          />
+                          {doctorDetailsErrors.specialization && (
+                            <p className="text-danger fw-bold">
+                              {doctorDetailsErrors.specialization.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="row mt-3">
+                        <div className="col-lg-6">
+                          <label>Experience In Years:</label>
+                        </div>
+                        <div className="col-lg-6">
+                          <input
+                            type="number"
+                            className="form-control"
+                            {...register("experience")}
+                            value={doctorData?.experience || ""}
+                          />
+                          {doctorDetailsErrors.experience && (
+                            <p className="text-danger fw-bold">
+                              {doctorDetailsErrors.experience.message}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-3 mb-3 text-center">
+                      <button type="submit w-100">Submit</button>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            )}
+          </Accordion.Body>
+        </Accordion.Item>
+
+        <Accordion.Item eventKey="4">
+          <Accordion.Header>Remove Doctor Access</Accordion.Header>
+          <Accordion.Body>
+            <div className="container">
+              <form
+                onSubmit={handleSubmitRemoveDoctorAddress(removeDoctorAddress)}
+              >
                 <div className="form-group row mt-2">
                   <div className="col-lg-6 text-center">
-                    <label>Enter The Doctor Wallet Address:</label>
+                    <label>Doctor Address to Remove:</label>
                   </div>
                   <div className="col-lg-6">
                     <input
                       type="text"
                       className="form-control"
-                      {...doctorAddress("doctorAddressToCheck")}
+                      {...registerRemoveOwner("DoctorAddressToRemove")}
                     />
-                    {doctorAddressErrors.doctorAddressToCheck && (
+                    {removeOwnerErrors.DoctorAddressToRemove && (
                       <p className="text-danger fw-bold">
-                        {doctorAddressErrors.doctorAddressToCheck.message}
+                        {removeOwnerErrors.DoctorAddressToRemove.message}
                       </p>
                     )}
                   </div>
@@ -499,24 +804,15 @@ let medical=[]
 
                 <div className="mt-3 mb-3 text-center">
                   <button type="submit" className="w-50">
-                    check Doctor
+                    Remove Doctor
                   </button>
                 </div>
               </form>
             </div>
-            ) : (
-              "mugunth"
-            )}
-            
           </Accordion.Body>
         </Accordion.Item>
-
-        <Accordion.Item eventKey="4">
-          <Accordion.Header>Remove Doctor Access</Accordion.Header>
-          <Accordion.Body>hai</Accordion.Body>
-        </Accordion.Item>
       </Accordion>
-      <button onClick={click}>click</button>
+     
     </>
   );
 }

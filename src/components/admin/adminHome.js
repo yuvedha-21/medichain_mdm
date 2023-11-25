@@ -8,7 +8,8 @@ import {
   useAccountModal,
   useChainModal,
 } from "@rainbow-me/rainbowkit";
-import corporate from "../assets/doctor/corporate.png";
+import "./admin.css";
+// import corporate from "../assets/doctor/corporate.png";
 import AdminPrivilages from "./adminPrivilages";
 
 export default function AdminHome() {
@@ -69,17 +70,15 @@ export default function AdminHome() {
 
   return (
     <>
-      <div className="container-fluid doctorBg">
+      <div className="container-fluid adminBg">
         <div className="container">
           <div className="row">
+            
             <div className="col-lg-7">
-              <img src={corporate} className="doctorLandingPage" />
-            </div>
-            <div className="col-lg-5">
-              <h1 className="doctorLandingPageh1 ">
+              <h1 className="adminLandingPageh1 ">
                 MediChain <br /> Management To <br /> Track Patient History
               </h1>
-              <div className="d-flex">
+              <div className="d-flex pb-5">
                 {openAccountModal && (
                   <button
                     className=" doctorLandingPageButton mt-2"
@@ -91,7 +90,7 @@ export default function AdminHome() {
                 )}
                 {openConnectModal && (
                   <button
-                    className={` mt-2  p-4 doctorLandingPageButton`}
+                    className={` mt-3 mb-5 ps-4 pe-4 pt-2 pb-2 adminLandingPageButton`}
                     onClick={openAccountModal || openConnectModal}
                     type="button"
                   >
@@ -105,6 +104,10 @@ export default function AdminHome() {
                   </button>
                 )}
               </div>
+            </div>
+
+            <div className="col-lg-5">
+              {/* <img src={corporate} className="doctorLandingPage" /> */}
             </div>
           </div>
 
