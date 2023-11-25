@@ -51,6 +51,7 @@ let data=await blockchain.getPatientHealthData()
         );
         console.log(`Response for file ${file.name}:`, res.data);
           let ipfsData="ipfs.io/ipfs/"+res.data.IpfsHash
+          await blockchain.storePatientHealthDetailsToIPFS(ipfsData,address)
         console.log("ipfs.io/ipfs/"+res.data.IpfsHash);
       } catch (error) {
         console.log(`Error for file ${file.name}:`, error);
