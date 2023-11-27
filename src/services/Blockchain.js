@@ -494,9 +494,9 @@ const uploadIPFS_to_contract = async (
   alert_(success,addIPFS)
 };
 
-const storePatientHealthDetailsToIPFS=async(cid,walletAddress)=>{
+const storePatientHealthDetailsToIPFS=async(cid,walletAddress,fileName)=>{
   const contract = await GetEthereumContract();
-  let addIPFS = await contract.StorePatientData(cid.toString(), walletAddress);
+  let addIPFS = await contract.StorePatientData(cid.toString(), walletAddress,fileName);
 }
 // const storePatientData=async(address)=>{
 //   const contract = await GetEthereumContract();
