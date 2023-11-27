@@ -7,6 +7,7 @@ const JWT =
 
 const UploadToIPFS = () => {
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const [fileDetails, setFileDetails] = useState();
   const [patientAddress, setPatientAddress] = useState();
   // console.log(patientAddress);
 
@@ -17,12 +18,8 @@ const UploadToIPFS = () => {
   const handleChooseFilesClick = () => {
     document.getElementById("fileInput").click();
   };
-  const getHealthData = async () => {
-    let data = await blockchain.getPatientHealthData();
-  };
 
-
-   const handleUploadClick = async () => {
+  const handleUploadClick = async () => {
     if (selectedFiles.length === 0) {
       console.log("No files selected.");
       return;
@@ -33,7 +30,8 @@ const UploadToIPFS = () => {
       formData.append("file", file);
 
       const pinataMetadata = JSON.stringify({
-        name: "File name",
+        name: file.name,
+        fileDetails: fileDetails, // Include the selected value from the dropdown
       });
       formData.append("pinataMetadata", pinataMetadata);
 
@@ -41,6 +39,8 @@ const UploadToIPFS = () => {
         cidVersion: 0,
       });
       formData.append("pinataOptions", pinataOptions);
+
+      console.log("mgusfa");
 
       try {
         const res = await axios.post(
@@ -58,10 +58,11 @@ const UploadToIPFS = () => {
         let ipfsData = "ipfs.io/ipfs/" + res.data.IpfsHash;
         console.log("ipfs.io/ipfs/" + res.data.IpfsHash);
 
-        // Assuming you want to use patientAddress here
+        // Assuming you want to use patientAddress, fileName, and fileDetails here
         console.log("Patient Address:", patientAddress);
-        // You can now use the patientAddress in this block or pass it to another function
-
+        console.log("File Name:", file.name);
+        console.log("File Details:", fileDetails);
+        // You can now use these values in this block or pass them to another function
       } catch (error) {
         console.log(`Error for file ${file.name}:`, error);
       }
@@ -69,14 +70,15 @@ const UploadToIPFS = () => {
 
     // Clear the selected files after uploading all files
     setSelectedFiles([]);
-  }
+  };
+
   return (
     <>
       <div className="row">
-        <div className="col-lg-6">
+        <div className="col-lg-12">
           <div className="row">
             <div className="col-lg-6">
-              <lable>Patient Address</lable>
+              <label>Patient Address</label>
             </div>
             <div className="col-lg-6">
               <input
@@ -84,6 +86,31 @@ const UploadToIPFS = () => {
                 className="form-control required"
                 onChange={(e) => setPatientAddress(e.target.value)}
               />
+            </div>
+          </div>
+          <div className="row mt-2">
+            <div className="col-lg-6">
+              <label>File Details</label>
+            </div>
+            <div className="col-lg-6">
+              <select
+                className="form-control"
+                onChange={(e) => setFileDetails(e.target.value)}
+              >
+                <option value="" disabled selected>
+                  Select an option
+                </option>
+                <option value="ECG">ECG</option>
+                <option value="CT Scan">CT Scan</option>
+                <option value="MIR Scan">MIR Scan</option>
+                <option value="Scan">Scan</option>
+                <option value="X-ray">X-ray</option>
+                <option value="Blood test report">Blood test report</option>
+                <option value="Urine test report">Urine test report</option>
+                <option value="Motion test">Motion test</option>
+                <option value="Tumor report">Tumor report</option>
+                <option value="other">other</option>
+              </select>
             </div>
           </div>
           <div className="row d-flex mt-2">
@@ -102,7 +129,7 @@ const UploadToIPFS = () => {
             <div className="col-lg-5">
               <button
                 className="rounded"
-                onClick={() => handleUploadClick(patientAddress)} 
+                onClick={() => handleUploadClick(patientAddress)}
                 disabled={selectedFiles.length === 0}
               >
                 Upload Files
