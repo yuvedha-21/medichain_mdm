@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
 let success = "success";
 let info = "info";
 const { ethereum } = window;
-const contractAddress = "0x5ed69B417a11deA1893763A683E82c14463655D5";
+const contractAddress = "0xBfD5CdC8f0d5468DE93958BF6B952c8f4b7bAbbD";
 // 0x4ec8Af3f939325EeB5ca468e6ef85fc077cca978
 const contractAbi = abi.abi;
 // const docABI = docABI.abi;

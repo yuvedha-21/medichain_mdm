@@ -89,6 +89,7 @@ contract PatientDetails {
     struct HealthData{
         uint timestamp;
         string cid;
+        string fileName;
     }
     mapping (address => PatientPersonalDetails) public PatientsPersonalDetails;
     mapping(address=> PatientMedicalDetails)public PatientsMedicalDetails;
@@ -224,10 +225,11 @@ string memory date,
     }
 
 //store the IPFS CID mapped to address with timestamp
-    function StorePatientData(string memory _dataURL,address user) public {
+    function StorePatientData(string memory _dataURL,address user,string memory _fileName) public {
          HealthData memory newData = HealthData({
             timestamp: block.timestamp,
-            cid: _dataURL
+            cid: _dataURL,
+            fileName:_fileName
         });
 
         patientsStoredData[user].push(newData);

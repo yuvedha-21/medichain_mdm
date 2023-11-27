@@ -20,9 +20,10 @@ const UploadToIPFS = () => {
   const getHealthData = async () => {
     let data = await blockchain.getPatientHealthData();
   };
-
-
-   const handleUploadClick = async () => {
+const getHealthData=async()=>{
+let data=await blockchain.getPatientHealthData()
+}
+  const handleUploadClick = async (address) => {
     if (selectedFiles.length === 0) {
       console.log("No files selected.");
       return;
