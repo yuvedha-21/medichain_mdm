@@ -19,10 +19,12 @@ export default function PatientHome() {
   const [patientPersonal, setPatientPersonal] = useState();
   const [patientMedical, setPatientMedical] = useState();
   const [patientHealthData, setPatientHealthData] = useState();
+  const [patientReportDetails, setPatientReportDetails] = useState();
 
   // console.log(patientPersonal);
   // console.log(patientMedical);
   // console.log(patientHealthData);
+  // console.log(patientReportDetails);
 
   const { chain } = useNetwork();
 
@@ -55,8 +57,11 @@ export default function PatientHome() {
             setPatientPersonal(personal);
             let medical = await blockchain.getPatientMedicaldata(address);
             setPatientMedical(medical);
-            let healthDataCid = await blockchain.getPatientStoredData(address);
+            let healthDataCid = await blockchain.getPatientHealthData(address);
+            console.log(healthDataCid);
             setPatientHealthData(healthDataCid);
+            let patientReports = await blockchain.getPatientStoredData(address);
+            setPatientReportDetails(patientReports);
           } catch (error) {
             console.error("Error fetching data:", error);
           }
@@ -117,12 +122,13 @@ export default function PatientHome() {
           <div className="row">
             {ispatient ? (
              
-              patientPersonal && patientMedical && patientHealthData && (
+              patientPersonal && patientMedical && patientHealthData && patientReportDetails && (
                 <PatientDAshboard
                   patientDetails={{
                     personal: patientPersonal,
                     medical: patientMedical,
                     health: patientHealthData,
+                    report: patientReportDetails,
                   }}
                 />
               )

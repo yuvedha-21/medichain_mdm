@@ -507,6 +507,7 @@ const getPatientHealthData=async(address)=>{
   const contract = await GetEthereumContract();
   let data = await contract.getPatientHealthDetails(address);
   console.log(data);
+  return data
 }
 const getPatientStoredData = async (address) => {
   // let address=0x316adBe2505856d4c4D67573dC6b6648453faEa9
