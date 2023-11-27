@@ -23,18 +23,19 @@ export default function PatientDAshboard(props) {
                 <div className="card-body">
                   <h1>{patientPersonal.name}</h1>
                   <p>{patientPersonal.walletAddress}</p>
-                  <p>Age</p>
+                  <p>Age : {parseInt(patientPersonal.age)} Years</p>
                 </div>
               </div>
               <div className="card mt-3">
-                <div className="card-body">
-                  <h1>Information</h1>
-                  <p>Gender</p>
-                  <p>Blood Group</p>
-                  <p>Dieseases</p>
-                  <p>Allergies</p>
-                  <p>Height</p>
-                  <p>Weight</p>
+                <div className="card-body text-start">
+                  <h1 className="text-center fw-bold">Information</h1>
+                  <p>Gender : {patientPersonal.gender}</p>
+                  <p>Height : {parseInt(patientPersonal.height)} cm</p>
+                  <p>Weight : {parseInt(patientPersonal.weight)} kg</p>
+                  <p>Blood Group : {patientPersonal.bloodGroup} </p>
+                  <p>Activity Level : {patientMedical.physicalActivityLevel}</p>
+                  <p>Surgical History: {patientMedical.surgicalHistory_ifAny}</p>
+                  
                 </div>
               </div>
             </div>

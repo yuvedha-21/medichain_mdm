@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import * as blockchain from "../../services/Blockchain";
-import UploadToIPFS from "./UploadToIpfs";
+import UploadToIPFS from "../../UploadToIpfs";
 
 //Adding Patient Details Is On  Validation
 const PatientSchema = yup.object().shape({
@@ -50,6 +50,7 @@ const HealthConditionSchema = yup.object().shape({
 });
 
 export default function DoctorPrivilages() {
+  
   const [isValidDoctor, setIsValidDoctor] = useState("false");
 
   console.log(isValidDoctor);
