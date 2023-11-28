@@ -18,11 +18,11 @@ const UploadToIPFS = () => {
   const handleChooseFilesClick = () => {
     document.getElementById("fileInput").click();
   };
- 
-const getHealthData=async()=>{
-let data=await blockchain.getPatientHealthData()
-}
-  const handleUploadClick = async (address) => {
+
+  const getHealthData = async () => {
+    let data = await blockchain.getPatientHealthData();
+  };
+  const handleUploadClick = async (address, fileType) => {
     if (selectedFiles.length === 0) {
       console.log("No files selected.");
       return;
@@ -60,7 +60,11 @@ let data=await blockchain.getPatientHealthData()
 
         console.log(`Response for file ${file.name}:`, res.data);
         let ipfsData = "ipfs.io/ipfs/" + res.data.IpfsHash;
-        await blockchain.storePatientHealthDetailsToIPFS(ipfsData,address,fileDetails)
+        await blockchain.storePatientHealthDetailsToIPFS(
+          ipfsData,
+          address,
+          fileDetails
+        );
         console.log("ipfs.io/ipfs/" + res.data.IpfsHash);
 
         // Assuming you want to use patientAddress here
