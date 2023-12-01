@@ -1,15 +1,14 @@
 import React from "react";
 import "./headerbar.css";
-import { Container, Nav, Navbar, NavLink } from "react-bootstrap";
+import { Container, Nav, Navbar, NavLink,NavbarToggle } from "react-bootstrap";
 import NavbarCollapse from "react-bootstrap/esm/NavbarCollapse";
-import NavbarToggle from "react-bootstrap/esm/NavbarToggle";
 import brandLogo from "../../assets/Header & footer/header/medichainlogo.svg";
 import { Link } from "react-router-dom";
 
 export default function Headerbar() {
   return (
     <>
-      <Navbar className="navbar" sticky="top" expand="lg">
+      <Navbar className="navbar"  sticky="top" expand="lg">
         <Container>
           <NavLink href="/">
             <div className="d-flex">
